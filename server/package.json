@@ -4,12 +4,17 @@
   "description": "Server for letit",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "tsc --watch"
   },
   "keywords": [
     "reddit-clone",
     "social-media"
   ],
   "author": "frostzt",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^15.12.4",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.4"
+  }
 }
