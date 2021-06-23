@@ -1,0 +1,15 @@
+{
+  "name": "letit-server",
+  "version": "1.0.0",
+  "description": "Server for letit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reddit-clone",
+    "social-media"
+  ],
+  "author": "frostzt",
+  "license": "MIT"
+}
