@@ -24,26 +24,21 @@ export type Mutation = {
   updatePost?: Maybe<Post>;
 };
 
-
 export type MutationCreatePostArgs = {
   title: Scalars['String'];
 };
-
 
 export type MutationDeletePostArgs = {
   id: Scalars['String'];
 };
 
-
 export type MutationLoginArgs = {
   data: UsernamePasswordInput;
 };
 
-
 export type MutationRegisterArgs = {
   data: UsernamePasswordInput;
 };
-
 
 export type MutationUpdatePostArgs = {
   id: Scalars['String'];
@@ -64,7 +59,6 @@ export type Query = {
   post?: Maybe<Post>;
   posts: Array<Post>;
 };
-
 
 export type QueryPostArgs = {
   id: Scalars['Int'];
@@ -88,21 +82,22 @@ export type RegisterMutationVariables = Exact<{
   password: Scalars['String'];
 }>;
 
-
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'User', id: string, username: string, updatedAt: string, createdAt: string } };
-
+export type RegisterMutation = {
+  __typename?: 'Mutation';
+  register: { __typename?: 'User'; id: string; username: string; updatedAt: string; createdAt: string };
+};
 
 export const RegisterDocument = gql`
-    mutation Register($username: String!, $password: String!) {
-  register(data: {username: $username, password: $password}) {
-    id
-    username
-    updatedAt
-    createdAt
+  mutation Register($username: String!, $password: String!) {
+    register(data: { username: $username, password: $password }) {
+      id
+      username
+      updatedAt
+      createdAt
+    }
   }
-}
-    `;
+`;
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
-};
+}
