@@ -19,8 +19,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   createPost: Post;
   deletePost: Scalars['Boolean'];
-  login: User;
-  register: User;
+  login: UserResponse;
+  register: UserResponse;
   updatePost?: Maybe<Post>;
 };
 
@@ -53,6 +53,12 @@ export type Post = {
   updatedAt: Scalars['String'];
 };
 
+export type PropertyError = {
+  __typename?: 'PropertyError';
+  message: Scalars['String'];
+  property: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
@@ -72,6 +78,12 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<PropertyError>>;
+  user?: Maybe<User>;
+};
+
 export type UsernamePasswordInput = {
   password: Scalars['String'];
   username: Scalars['String'];
@@ -84,16 +96,24 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = {
   __typename?: 'Mutation';
-  register: { __typename?: 'User'; id: string; username: string; updatedAt: string; createdAt: string };
+  register: {
+    __typename?: 'UserResponse';
+    user?: { __typename?: 'User'; id: string; username: string } | null | undefined;
+    errors?: Array<{ __typename?: 'PropertyError'; message: string; property: string }> | null | undefined;
+  };
 };
 
 export const RegisterDocument = gql`
   mutation Register($username: String!, $password: String!) {
     register(data: { username: $username, password: $password }) {
-      id
-      username
-      updatedAt
-      createdAt
+      user {
+        id
+        username
+      }
+      errors {
+        message
+        property
+      }
     }
   }
 `;
