@@ -1,5 +1,5 @@
-mutation Register($data: UsernamePasswordInput!) {
-  register(data: $data) {
+mutation Login($data: UsernamePasswordInput!) {
+  login(data: $data) {
     user {
       ...NormalUser
     }

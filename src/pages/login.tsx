@@ -1,31 +1,34 @@
 import React from 'react';
 import Head from 'next/head';
 import { Form, Formik } from 'formik';
+import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { Button, Box } from '@chakra-ui/react';
 
 import Wrapper from '../components/Wrapper/Wrapper';
 import InputField from '../components/InputField/InputField';
 
-import { mapErrors } from '../utils/mapErrors';
-import { useRegisterMutation } from '../generated/graphql';
+import { useLoginMutation } from '../generated/graphql';
 
-const RegisterPage: React.FC<{}> = () => {
+const LoginPage: React.FC<{}> = () => {
   const router = useRouter();
-  const [, register] = useRegisterMutation();
+  const [, login] = useLoginMutation();
 
   return (
     <Wrapper variant="small">
       <Head>
-        <title>Register - Letit</title>
+        <title>Login - Letit</title>
       </Head>
       <Formik
         initialValues={{ username: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register({ data: values });
-          if (response.data?.register.errors) {
-            setErrors(mapErrors(response.data.register.errors));
-          } else if (response.data?.register.user) {
+          const response = await login({ data: values });
+          if (response.data?.login.errors) {
+            console.log(response.data.login.errors);
+            response.data.login.errors.forEach((error) => {
+              toast.error(error.message);
+            });
+          } else if (response.data?.login.user) {
             router.push('/');
           }
         }}
@@ -34,13 +37,13 @@ const RegisterPage: React.FC<{}> = () => {
           <Form>
             <Box>
               <Box mb={2}>
-                <InputField name="username" placeholder="Create a username" label="Username" />
+                <InputField name="username" placeholder="Enter your username" label="Username" />
               </Box>
               <Box mb={4}>
-                <InputField name="password" placeholder="Create a password" type="password" label="Password" />
+                <InputField name="password" placeholder="Enter your password" type="password" label="Password" />
               </Box>
               <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
-                Register
+                Login
               </Button>
             </Box>
           </Form>
@@ -50,4 +53,4 @@ const RegisterPage: React.FC<{}> = () => {
   );
 };
 
-export default RegisterPage;
+export default LoginPage;
