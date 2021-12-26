@@ -3,12 +3,14 @@ import Head from 'next/head';
 import { Form, Formik } from 'formik';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import { withUrqlClient } from 'next-urql';
 import { Button, Box } from '@chakra-ui/react';
 
 import Wrapper from '../components/Wrapper/Wrapper';
 import InputField from '../components/InputField/InputField';
 
 import { useLoginMutation } from '../generated/graphql';
+import { createUrqlClient } from '../utils/createUrqlClient';
 
 const LoginPage: React.FC<{}> = () => {
   const router = useRouter();
@@ -20,11 +22,10 @@ const LoginPage: React.FC<{}> = () => {
         <title>Login - Letit</title>
       </Head>
       <Formik
-        initialValues={{ username: '', password: '' }}
+        initialValues={{ usernameOrEmail: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login({ data: values });
+          const response = await login(values);
           if (response.data?.login.errors) {
-            console.log(response.data.login.errors);
             response.data.login.errors.forEach((error) => {
               toast.error(error.message);
             });
@@ -37,7 +38,11 @@ const LoginPage: React.FC<{}> = () => {
           <Form>
             <Box>
               <Box mb={2}>
-                <InputField name="username" placeholder="Enter your username" label="Username" />
+                <InputField
+                  name="usernameOrEmail"
+                  placeholder="Enter your username or email"
+                  label="Username or Email"
+                />
               </Box>
               <Box mb={4}>
                 <InputField name="password" placeholder="Enter your password" type="password" label="Password" />
@@ -53,4 +58,4 @@ const LoginPage: React.FC<{}> = () => {
   );
 };
 
-export default LoginPage;
+export default withUrqlClient(createUrqlClient)(LoginPage);
