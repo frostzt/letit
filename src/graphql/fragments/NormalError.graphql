@@ -1,0 +1,4 @@
+fragment NormalError on PropertyError {
+  message
+  property
+}
