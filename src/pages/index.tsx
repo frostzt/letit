@@ -1,24 +1,26 @@
-import Head from 'next/head';
+import { Box, Link } from '@chakra-ui/react';
 import type { NextPage } from 'next';
-import { Box } from '@chakra-ui/react';
-import React, { Fragment } from 'react';
 import { withUrqlClient } from 'next-urql';
-
-import NavBar from '../components/NavBar/NavBar';
-import { createUrqlClient } from '../utils/createUrqlClient';
+import Head from 'next/head';
+import NextLink from 'next/link';
+import React from 'react';
+import Layout from '../components/Layout/Layout';
 import { usePostsQuery } from '../generated/graphql';
+import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Home: NextPage = () => {
-  const [{ data, fetching }] = usePostsQuery();
+  const [{ data }] = usePostsQuery();
 
   return (
-    <Fragment>
+    <Layout>
       <Head>
         <title>Letit - Let it out!</title>
       </Head>
-      <NavBar />
+      <NextLink href="/create-post">
+        <Link>Create Post</Link>
+      </NextLink>
       <Box>{data && data.posts.map((post) => <div key={post.id}>{post.title}</div>)}</Box>
-    </Fragment>
+    </Layout>
   );
 };
 

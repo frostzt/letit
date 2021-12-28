@@ -6,7 +6,7 @@ import { withUrqlClient } from 'next-urql';
 import { Button, Box } from '@chakra-ui/react';
 
 import Wrapper from '../components/Wrapper/Wrapper';
-import InputField from '../components/InputField/InputField';
+import { InputField } from '../components/InputField/InputField';
 
 import { mapErrors } from '../utils/mapErrors';
 import { useRegisterMutation } from '../generated/graphql';

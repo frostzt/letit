@@ -1,14 +1,12 @@
-import React from 'react';
-import Head from 'next/head';
+import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/router';
 import { withUrqlClient } from 'next-urql';
-import { Button, Box } from '@chakra-ui/react';
-
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { toast } from 'react-hot-toast';
+import { InputField } from '../components/InputField/InputField';
 import Wrapper from '../components/Wrapper/Wrapper';
-import InputField from '../components/InputField/InputField';
-
 import { useLoginMutation } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 
@@ -30,7 +28,11 @@ const LoginPage: React.FC<{}> = () => {
               toast.error(error.message);
             });
           } else if (response.data?.login.user) {
-            router.push('/');
+            if (typeof router.query.next === 'string') {
+              router.push(router.query.next);
+            } else {
+              router.push('/');
+            }
           }
         }}
       >

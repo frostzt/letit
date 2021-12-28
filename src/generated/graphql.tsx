@@ -24,7 +24,7 @@ export type BooleanResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: BooleanResponse;
-  createPost: Post;
+  createPost: PostResponse;
   deletePost: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   login: UserResponse;
@@ -39,7 +39,7 @@ export type MutationChangePasswordArgs = {
 };
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String'];
+  data: PostInput;
 };
 
 export type MutationDeletePostArgs = {
@@ -66,10 +66,24 @@ export type MutationUpdatePostArgs = {
 
 export type Post = {
   __typename?: 'Post';
+  content: Scalars['String'];
   createdAt: Scalars['String'];
+  creatorId: Scalars['String'];
   id: Scalars['String'];
+  points: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type PostInput = {
+  content: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type PostResponse = {
+  __typename?: 'PostResponse';
+  errors?: Maybe<Array<PropertyError>>;
+  post?: Maybe<Post>;
 };
 
 export type PropertyError = {
@@ -144,6 +158,25 @@ export type ChangePasswordMutation = {
   };
 };
 
+export type CreatePostMutationVariables = Exact<{
+  data: PostInput;
+}>;
+
+export type CreatePostMutation = {
+  __typename?: 'Mutation';
+  createPost: {
+    __typename?: 'PostResponse';
+    post?:
+      | { __typename?: 'Post'; id: string; title: string; content: string; updatedAt: string; createdAt: string }
+      | null
+      | undefined;
+    errors?:
+      | Array<{ __typename?: 'PropertyError'; message: string; property?: string | null | undefined }>
+      | null
+      | undefined;
+  };
+};
+
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -198,7 +231,14 @@ export type PostsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type PostsQuery = {
   __typename?: 'Query';
-  posts: Array<{ __typename?: 'Post'; id: string; title: string; createdAt: string; updatedAt: string }>;
+  posts: Array<{
+    __typename?: 'Post';
+    id: string;
+    title: string;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
 };
 
 export const NormalUserFragmentDoc = gql`
@@ -239,6 +279,27 @@ export const ChangePasswordDocument = gql`
 
 export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+}
+export const CreatePostDocument = gql`
+  mutation CreatePost($data: PostInput!) {
+    createPost(data: $data) {
+      post {
+        id
+        title
+        content
+        updatedAt
+        createdAt
+      }
+      errors {
+        message
+        property
+      }
+    }
+  }
+`;
+
+export function useCreatePostMutation() {
+  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
 }
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
@@ -299,6 +360,7 @@ export const PostsDocument = gql`
     posts {
       id
       title
+      content
       createdAt
       updatedAt
     }

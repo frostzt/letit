@@ -6,8 +6,8 @@ import { withUrqlClient } from 'next-urql';
 import { Box, Button } from '@chakra-ui/react';
 
 import Wrapper from '../components/Wrapper/Wrapper';
-import InputField from '../components/InputField/InputField';
 import { createUrqlClient } from '../utils/createUrqlClient';
+import { InputField } from '../components/InputField/InputField';
 import { useForgotPasswordMutation } from '../generated/graphql';
 
 const ForgotPasswordPage: NextPage<{}> = () => {

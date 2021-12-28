@@ -1,18 +1,19 @@
-import React from 'react';
-import Head from 'next/head';
-import toast from 'react-hot-toast';
-import { Formik, Form } from 'formik';
-import { withUrqlClient } from 'next-urql';
 import { Box, Button } from '@chakra-ui/react';
-import { GetServerSideProps, NextPage } from 'next';
-
-import { mapErrors } from '../../utils/mapErrors';
+import { Form, Formik } from 'formik';
+import { NextPage } from 'next';
+import { withUrqlClient } from 'next-urql';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import React from 'react';
+import toast from 'react-hot-toast';
+import { InputField } from '../../components/InputField/InputField';
 import Wrapper from '../../components/Wrapper/Wrapper';
-import InputField from '../../components/InputField/InputField';
-import { createUrqlClient } from '../../utils/createUrqlClient';
 import { useChangePasswordMutation } from '../../generated/graphql';
+import { createUrqlClient } from '../../utils/createUrqlClient';
+import { mapErrors } from '../../utils/mapErrors';
 
-const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
+const ChangePassword: NextPage = () => {
+  const router = useRouter();
   const [, changePassword] = useChangePasswordMutation();
 
   return (
@@ -26,7 +27,10 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
           if (values.password !== values.confirmPassword) {
             setErrors({ confirmPassword: 'Passwords do not match!' });
           } else {
-            const response = await changePassword({ newPassword: values.password, token });
+            const response = await changePassword({
+              newPassword: values.password,
+              token: typeof router.query.token === 'string' ? router.query.token : '',
+            });
             if (response.data?.changePassword.errors) {
               const erroMap = mapErrors(response.data.changePassword.errors);
               if ('token' in erroMap) {
@@ -70,11 +74,3 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
 };
 
 export default withUrqlClient(createUrqlClient)(ChangePassword);
-
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  return {
-    props: {
-      token: query.token as string,
-    },
-  };
-};
