@@ -3,6 +3,7 @@ import Router from 'next/router';
 import { dedupExchange, Exchange, fetchExchange } from 'urql';
 import { pipe, tap } from 'wonka';
 import { LoginMutation, LogoutMutation, MeDocument, MeQuery, RegisterMutation } from '../generated/graphql';
+import { cursorPagination } from './cursorPagination';
 import { updateQuery } from './updateQuery';
 
 const errorExchange: Exchange =
@@ -26,6 +27,14 @@ export const createUrqlClient = (ssrExchange: any) => ({
   exchanges: [
     dedupExchange,
     cacheExchange({
+      keys: {
+        PaginatedPosts: () => null,
+      },
+      resolvers: {
+        Query: {
+          posts: cursorPagination(),
+        },
+      },
       updates: {
         Mutation: {
           logout: (_result, _args, cache, _info) => {

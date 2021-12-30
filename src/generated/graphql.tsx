@@ -64,9 +64,16 @@ export type MutationUpdatePostArgs = {
   title: Scalars['String'];
 };
 
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
+  hasMore: Scalars['Boolean'];
+  posts: Array<Post>;
+};
+
 export type Post = {
   __typename?: 'Post';
   content: Scalars['String'];
+  contentSnippet: Scalars['String'];
   createdAt: Scalars['String'];
   creatorId: Scalars['String'];
   id: Scalars['String'];
@@ -96,11 +103,16 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<User>;
   post?: Maybe<Post>;
-  posts: Array<Post>;
+  posts: PaginatedPosts;
 };
 
 export type QueryPostArgs = {
   id: Scalars['Int'];
+};
+
+export type QueryPostsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type User = {
@@ -227,18 +239,25 @@ export type MeQuery = {
   me?: { __typename?: 'User'; id: string; username: string } | null | undefined;
 };
 
-export type PostsQueryVariables = Exact<{ [key: string]: never }>;
+export type PostsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
 
 export type PostsQuery = {
   __typename?: 'Query';
-  posts: Array<{
-    __typename?: 'Post';
-    id: string;
-    title: string;
-    content: string;
-    createdAt: string;
-    updatedAt: string;
-  }>;
+  posts: {
+    __typename?: 'PaginatedPosts';
+    hasMore: boolean;
+    posts: Array<{
+      __typename?: 'Post';
+      id: string;
+      title: string;
+      contentSnippet: string;
+      createdAt: string;
+      updatedAt: string;
+    }>;
+  };
 };
 
 export const NormalUserFragmentDoc = gql`
@@ -356,13 +375,16 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 }
 export const PostsDocument = gql`
-  query Posts {
-    posts {
-      id
-      title
-      content
-      createdAt
-      updatedAt
+  query Posts($limit: Int!, $cursor: String) {
+    posts(limit: $limit, cursor: $cursor) {
+      hasMore
+      posts {
+        id
+        title
+        contentSnippet
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
