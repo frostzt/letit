@@ -9,7 +9,7 @@ import { usePostsQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Home: NextPage = () => {
-  const [variables, setVariables] = useState({ limit: 50, cursor: undefined as undefined | string });
+  const [variables, setVariables] = useState({ limit: 15, cursor: undefined as undefined | string });
   const [{ data, fetching }] = usePostsQuery({ variables });
 
   const handleLoadMore = () => {
@@ -33,6 +33,7 @@ const Home: NextPage = () => {
           data.posts.posts.map((post) => (
             <Box key={post.id} p={5} shadow="md" borderWidth="1px">
               <Heading fontSize="xl">{post.title}</Heading>
+              <Text>Posted by {post.creator.username}</Text>
               <Text mt={4}>{post.contentSnippet}</Text>
             </Box>
           ))}

@@ -31,6 +31,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   register: UserResponse;
   updatePost?: Maybe<Post>;
+  vote: Scalars['Boolean'];
 };
 
 export type MutationChangePasswordArgs = {
@@ -64,6 +65,11 @@ export type MutationUpdatePostArgs = {
   title: Scalars['String'];
 };
 
+export type MutationVoteArgs = {
+  postId: Scalars['String'];
+  value: Scalars['Int'];
+};
+
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
   hasMore: Scalars['Boolean'];
@@ -75,6 +81,7 @@ export type Post = {
   content: Scalars['String'];
   contentSnippet: Scalars['String'];
   createdAt: Scalars['String'];
+  creator: User;
   creatorId: Scalars['String'];
   id: Scalars['String'];
   points: Scalars['String'];
@@ -107,7 +114,7 @@ export type Query = {
 };
 
 export type QueryPostArgs = {
-  id: Scalars['Int'];
+  id: Scalars['String'];
 };
 
 export type QueryPostsArgs = {
@@ -256,6 +263,7 @@ export type PostsQuery = {
       contentSnippet: string;
       createdAt: string;
       updatedAt: string;
+      creator: { __typename?: 'User'; id: string; username: string };
     }>;
   };
 };
@@ -384,6 +392,10 @@ export const PostsDocument = gql`
         contentSnippet
         createdAt
         updatedAt
+        creator {
+          id
+          username
+        }
       }
     }
   }
