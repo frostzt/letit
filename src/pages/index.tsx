@@ -5,6 +5,7 @@ import Head from 'next/head';
 import NextLink from 'next/link';
 import React, { useState } from 'react';
 import Layout from '../components/Layout/Layout';
+import Votes from '../components/Votes/Votes';
 import { usePostsQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 
@@ -21,21 +22,22 @@ const Home: NextPage = () => {
       <Head>
         <title>Letit - Let it out!</title>
       </Head>
-      <Flex mb={4} align="center">
-        <Heading>Letit</Heading>
-        <NextLink href="/create-post">
-          <Link ml="auto">Create Post</Link>
-        </NextLink>
-      </Flex>
       {fetching && <div>loading ...</div>}
       <Stack spacing={8}>
         {data &&
           data.posts.posts.map((post) => (
-            <Box key={post.id} p={5} shadow="md" borderWidth="1px">
-              <Heading fontSize="xl">{post.title}</Heading>
-              <Text>Posted by {post.creator.username}</Text>
-              <Text mt={4}>{post.contentSnippet}</Text>
-            </Box>
+            <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
+              <Votes post={post} />
+              <Box>
+                <NextLink href="/post/[id]" as={`/post/${post.id}`}>
+                  <Link>
+                    <Heading fontSize="xl">{post.title}</Heading>
+                  </Link>
+                </NextLink>
+                <Text>Posted by {post.creator.username}</Text>
+                <Text mt={4}>{post.contentSnippet}</Text>
+              </Box>
+            </Flex>
           ))}
       </Stack>
       {data && data.posts.hasMore ? (
