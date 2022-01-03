@@ -1,5 +1,4 @@
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, Button, Flex, Heading, IconButton, Link, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import { withUrqlClient } from 'next-urql';
 import Head from 'next/head';
@@ -8,7 +7,7 @@ import React, { useState } from 'react';
 import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../components/Layout/Layout';
 import Votes from '../components/Votes/Votes';
-import { useDeletePostMutation, useMeQuery, usePostsQuery } from '../generated/graphql';
+import { useMeQuery, usePostsQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Home: NextPage = () => {
@@ -19,6 +18,17 @@ const Home: NextPage = () => {
   const handleLoadMore = () => {
     setVariables({ limit: variables.limit, cursor: data?.posts.posts[data.posts.posts.length - 1].createdAt });
   };
+
+  if (!fetching && !data) {
+    return (
+      <Layout>
+        <Head>
+          <title>Letit - Let it out!</title>
+        </Head>
+        <Box>Something broke! Please try again!</Box>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
