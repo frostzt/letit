@@ -42,7 +42,7 @@ const NavBar: React.FC<NavBarProps> = () => {
   }
 
   return (
-    <Flex position="sticky" top={0} bg="tomato" p={4}>
+    <Flex zIndex={9999} position="sticky" top={0} bg="tomato" p={4}>
       <Flex flex={1} maxW={800} margin="auto" align="center">
         <NextLink href="/">
           <Link>

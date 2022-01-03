@@ -23,7 +23,7 @@ const Votes: React.FC<UpvoteProps> = ({ post }) => {
           setLoading('not-loading');
         }}
         isLoading={loading === 'upvote-loading'}
-        colorScheme={post.voteStatus === 1 ? 'green' : undefined}
+        colorScheme={post.voteStatus === 1 ? 'green' : 'blackAlpha'}
         icon={<ChevronUpIcon />}
         aria-label="Upvote"
       />
@@ -37,7 +37,7 @@ const Votes: React.FC<UpvoteProps> = ({ post }) => {
           await vote({ postId: post.id, value: -1 });
           setLoading('not-loading');
         }}
-        colorScheme={post.voteStatus === -1 ? 'red' : undefined}
+        colorScheme={post.voteStatus === -1 ? 'red' : 'blackAlpha'}
         isLoading={loading === 'downvote-loading'}
         icon={<ChevronDownIcon />}
         aria-label="Downvote"
