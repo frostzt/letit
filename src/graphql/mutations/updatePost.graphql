@@ -1,0 +1,13 @@
+mutation UpdatePost($id: String!, $content: String, $title: String) {
+  updatePost(id: $id, content: $content, title: $title) {
+    post {
+      id
+      title
+      content
+      contentSnippet
+    }
+    errors {
+      ...NormalError
+    }
+  }
+}

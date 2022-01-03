@@ -30,7 +30,7 @@ export type Mutation = {
   login: UserResponse;
   logout: Scalars['Boolean'];
   register: UserResponse;
-  updatePost?: Maybe<Post>;
+  updatePost?: Maybe<PostResponse>;
   vote: Scalars['Boolean'];
 };
 
@@ -61,8 +61,9 @@ export type MutationRegisterArgs = {
 };
 
 export type MutationUpdatePostArgs = {
+  content?: InputMaybe<Scalars['String']>;
   id: Scalars['String'];
-  title: Scalars['String'];
+  title?: InputMaybe<Scalars['String']>;
 };
 
 export type MutationVoteArgs = {
@@ -258,6 +259,27 @@ export type RegisterMutation = {
   };
 };
 
+export type UpdatePostMutationVariables = Exact<{
+  id: Scalars['String'];
+  content?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+}>;
+
+export type UpdatePostMutation = {
+  __typename?: 'Mutation';
+  updatePost?:
+    | {
+        __typename?: 'PostResponse';
+        post?: { __typename?: 'Post'; id: string; title: string; content: string } | null | undefined;
+        errors?:
+          | Array<{ __typename?: 'PropertyError'; message: string; property?: string | null | undefined }>
+          | null
+          | undefined;
+      }
+    | null
+    | undefined;
+};
+
 export type VoteMutationVariables = Exact<{
   postId: Scalars['String'];
   value: Scalars['Int'];
@@ -443,6 +465,25 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+}
+export const UpdatePostDocument = gql`
+  mutation UpdatePost($id: String!, $content: String, $title: String) {
+    updatePost(id: $id, content: $content, title: $title) {
+      post {
+        id
+        title
+        content
+      }
+      errors {
+        ...NormalError
+      }
+    }
+  }
+  ${NormalErrorFragmentDoc}
+`;
+
+export function useUpdatePostMutation() {
+  return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
 }
 export const VoteDocument = gql`
   mutation Vote($postId: String!, $value: Int!) {

@@ -1,19 +1,21 @@
-import { Heading, Box } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
-import { useRouter } from 'next/router';
+import Head from 'next/head';
 import React from 'react';
+import EditDeletePostBtns from '../../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../../components/Layout/Layout';
-import { usePostQuery } from '../../generated/graphql';
+import { useGetPostFromUrl } from '../../hooks/useGetPostFromUrl';
 import { createUrqlClient } from '../../utils/createUrqlClient';
 
 const PostPage = () => {
-  const router = useRouter();
-  const thisPostId = typeof router.query.id === 'string' ? router.query.id : 'undefined';
-  const [{ data, fetching }] = usePostQuery({ pause: thisPostId === 'undefined', variables: { id: thisPostId } });
+  const [{ data, fetching }] = useGetPostFromUrl();
 
   if (fetching) {
     return (
       <Layout>
+        <Head>
+          <title>Loading post - Letit</title>
+        </Head>
         <div>loading...</div>
       </Layout>
     );
@@ -22,6 +24,9 @@ const PostPage = () => {
   if (!data?.post) {
     return (
       <Layout>
+        <Head>
+          <title>Post not found - Letit</title>
+        </Head>
         <Box>Could not find this post!</Box>
       </Layout>
     );
@@ -29,8 +34,12 @@ const PostPage = () => {
 
   return (
     <Layout>
+      <Head>
+        <title>{data.post.title} - Letit</title>
+      </Head>
       <Heading mb={4}>{data.post.title}</Heading>
-      <Box>{data.post.content}</Box>
+      <Box mb={4}>{data.post.content}</Box>
+      <EditDeletePostBtns id={data.post.id} />
     </Layout>
   );
 };

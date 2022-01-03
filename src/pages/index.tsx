@@ -1,19 +1,20 @@
-import { DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Box, Button, Flex, Heading, IconButton, Link, Stack, Text } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import { withUrqlClient } from 'next-urql';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import React, { useState } from 'react';
+import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../components/Layout/Layout';
 import Votes from '../components/Votes/Votes';
-import { useDeletePostMutation, usePostsQuery } from '../generated/graphql';
+import { useDeletePostMutation, useMeQuery, usePostsQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Home: NextPage = () => {
   const [variables, setVariables] = useState({ limit: 15, cursor: undefined as undefined | string });
+  const [{ data: meData }] = useMeQuery();
   const [{ data, fetching }] = usePostsQuery({ variables });
-  const [, deletePost] = useDeletePostMutation();
 
   const handleLoadMore = () => {
     setVariables({ limit: variables.limit, cursor: data?.posts.posts[data.posts.posts.length - 1].createdAt });
@@ -40,15 +41,7 @@ const Home: NextPage = () => {
                   <Text>Posted by {post.creator.username}</Text>
                   <Flex mt={4} align="center">
                     <Text>{post.contentSnippet}</Text>
-                    <IconButton
-                      onClick={() => {
-                        deletePost({ id: post.id });
-                      }}
-                      colorScheme="blackAlpha"
-                      ml="auto"
-                      icon={<DeleteIcon />}
-                      aria-label="Delete Post"
-                    />
+                    {meData?.me?.id === post.creator.id && <EditDeletePostBtns id={post.id} />}
                   </Flex>
                 </Box>
               </Flex>
