@@ -44,7 +44,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   }
 
   return {
-    url: process.env.NEXT_PUBLIC_API,
+    url: process.env.NEXT_PUBLIC_API! as string,
     fetchOptions: {
       credentials: 'include' as const,
       headers: cookie
