@@ -4,6 +4,7 @@ import { withUrqlClient } from 'next-urql';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../components/Layout/Layout';
 import Votes from '../components/Votes/Votes';
@@ -13,11 +14,15 @@ import { createUrqlClient } from '../utils/createUrqlClient';
 const Home: NextPage = () => {
   const [variables, setVariables] = useState({ limit: 15, cursor: undefined as undefined | string });
   const [{ data: meData }] = useMeQuery();
-  const [{ data, fetching }] = usePostsQuery({ variables });
+  const [{ data, error, fetching }] = usePostsQuery({ variables });
 
   const handleLoadMore = () => {
     setVariables({ limit: variables.limit, cursor: data?.posts.posts[data.posts.posts.length - 1].createdAt });
   };
+
+  if (error) {
+    toast.error(error.message);
+  }
 
   if (!fetching && !data) {
     return (
