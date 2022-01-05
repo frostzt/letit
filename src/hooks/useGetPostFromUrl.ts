@@ -3,5 +3,5 @@ import { useGetPostIdFromUrl } from './useGetPostIdFromUrl';
 
 export const useGetPostFromUrl = () => {
   const thisPostId = useGetPostIdFromUrl();
-  return usePostQuery({ pause: thisPostId === 'undefined', variables: { id: thisPostId } });
+  return usePostQuery({ skip: thisPostId === 'undefined', variables: { id: thisPostId } });
 };

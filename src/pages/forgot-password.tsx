@@ -1,18 +1,16 @@
-import Head from 'next/head';
-import { NextPage } from 'next';
-import { Formik, Form } from 'formik';
-import React, { useState } from 'react';
-import { withUrqlClient } from 'next-urql';
 import { Box, Button } from '@chakra-ui/react';
-
-import Wrapper from '../components/Wrapper/Wrapper';
-import { createUrqlClient } from '../utils/createUrqlClient';
+import { Form, Formik } from 'formik';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import React, { useState } from 'react';
 import { InputField } from '../components/InputField/InputField';
+import Wrapper from '../components/Wrapper/Wrapper';
 import { useForgotPasswordMutation } from '../generated/graphql';
+import { withApollo } from '../utils/withApollo';
 
 const ForgotPasswordPage: NextPage<{}> = () => {
   const [complete, setComplete] = useState(false);
-  const [, forgotPassword] = useForgotPasswordMutation();
+  const [forgotPassword] = useForgotPasswordMutation();
 
   return (
     <Wrapper variant="small">
@@ -22,7 +20,7 @@ const ForgotPasswordPage: NextPage<{}> = () => {
       <Formik
         initialValues={{ email: '' }}
         onSubmit={async (values) => {
-          await forgotPassword(values);
+          await forgotPassword({ variables: values });
           setComplete(true);
         }}
       >
@@ -49,4 +47,4 @@ const ForgotPasswordPage: NextPage<{}> = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(ForgotPasswordPage);
+export default withApollo({ ssr: false })(ForgotPasswordPage);

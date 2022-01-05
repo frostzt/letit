@@ -1,7 +1,6 @@
 import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { NextPage } from 'next';
-import { withUrqlClient } from 'next-urql';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -9,12 +8,12 @@ import { InputField, InputFieldTextArea } from '../components/InputField/InputFi
 import Layout from '../components/Layout/Layout';
 import { useCreatePostMutation } from '../generated/graphql';
 import { useIsAuthenticated } from '../hooks/useIsAuthenticated';
-import { createUrqlClient } from '../utils/createUrqlClient';
 import { mapErrors } from '../utils/mapErrors';
+import { withApollo } from '../utils/withApollo';
 
 const CreatePostPage: NextPage<{}> = () => {
   const router = useRouter();
-  const [, createPost] = useCreatePostMutation();
+  const [createPost] = useCreatePostMutation();
 
   useIsAuthenticated();
 
@@ -26,7 +25,12 @@ const CreatePostPage: NextPage<{}> = () => {
       <Formik
         initialValues={{ title: '', content: '' }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await createPost({ data: values });
+          const response = await createPost({
+            variables: { data: values },
+            update: (cache) => {
+              cache.evict({ fieldName: 'posts:{}' });
+            },
+          });
 
           // Handle validation errors
           if (response.data?.createPost.errors) {
@@ -59,4 +63,4 @@ const CreatePostPage: NextPage<{}> = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(CreatePostPage);
+export default withApollo({ ssr: false })(CreatePostPage);

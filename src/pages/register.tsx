@@ -1,20 +1,17 @@
-import React from 'react';
-import Head from 'next/head';
+import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { withUrqlClient } from 'next-urql';
-import { Button, Box } from '@chakra-ui/react';
-
-import Wrapper from '../components/Wrapper/Wrapper';
+import React from 'react';
 import { InputField } from '../components/InputField/InputField';
-
+import Wrapper from '../components/Wrapper/Wrapper';
+import { MeDocument, MeQuery, useRegisterMutation } from '../generated/graphql';
 import { mapErrors } from '../utils/mapErrors';
-import { useRegisterMutation } from '../generated/graphql';
-import { createUrqlClient } from '../utils/createUrqlClient';
+import { withApollo } from '../utils/withApollo';
 
 const RegisterPage: React.FC<{}> = () => {
   const router = useRouter();
-  const [, register] = useRegisterMutation();
+  const [register] = useRegisterMutation();
 
   return (
     <Wrapper variant="small">
@@ -24,7 +21,18 @@ const RegisterPage: React.FC<{}> = () => {
       <Formik
         initialValues={{ username: '', password: '', email: '' }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register({ data: values });
+          const response = await register({
+            variables: { data: values },
+            update: (cache, { data }) => {
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: 'Query',
+                  me: data?.register.user,
+                },
+              });
+            },
+          });
           if (response.data?.register.errors) {
             setErrors(mapErrors(response.data.register.errors));
           } else if (response.data?.register.user) {
@@ -55,4 +63,4 @@ const RegisterPage: React.FC<{}> = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(RegisterPage);
+export default withApollo({ ssr: false })(RegisterPage);

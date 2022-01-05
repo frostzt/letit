@@ -1,30 +1,33 @@
 import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react';
 import type { NextPage } from 'next';
-import { withUrqlClient } from 'next-urql';
 import Head from 'next/head';
 import NextLink from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import toast from 'react-hot-toast';
 import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../components/Layout/Layout';
 import Votes from '../components/Votes/Votes';
 import { useMeQuery, usePostsQuery } from '../generated/graphql';
-import { createUrqlClient } from '../utils/createUrqlClient';
+import { withApollo } from '../utils/withApollo';
 
 const Home: NextPage = () => {
-  const [variables, setVariables] = useState({ limit: 15, cursor: undefined as undefined | string });
-  const [{ data: meData }] = useMeQuery();
-  const [{ data, error, fetching }] = usePostsQuery({ variables });
+  const { data: meData } = useMeQuery();
+  const { data, error, loading, fetchMore, variables } = usePostsQuery({
+    variables: { limit: 15, cursor: undefined },
+    notifyOnNetworkStatusChange: true,
+  });
 
   const handleLoadMore = () => {
-    setVariables({ limit: variables.limit, cursor: data?.posts.posts[data.posts.posts.length - 1].createdAt });
+    fetchMore({
+      variables: { limit: variables?.limit, cursor: data?.posts.posts[data.posts.posts.length - 1].createdAt },
+    });
   };
 
   if (error) {
     toast.error(error.message);
   }
 
-  if (!fetching && !data) {
+  if (!loading && !data) {
     return (
       <Layout>
         <Head>
@@ -40,7 +43,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Letit - Let it out!</title>
       </Head>
-      {fetching && <div>loading ...</div>}
+      {loading && <div>loading ...</div>}
       <Stack spacing={8}>
         {data &&
           data.posts.posts.map((post) =>
@@ -65,7 +68,7 @@ const Home: NextPage = () => {
       </Stack>
       {data && data.posts.hasMore ? (
         <Flex>
-          <Button onClick={handleLoadMore} isLoading={fetching} colorScheme="red" m="auto" my={8}>
+          <Button onClick={handleLoadMore} isLoading={loading} colorScheme="red" m="auto" my={8}>
             load more
           </Button>
         </Flex>
@@ -74,4 +77,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Home);
+export default withApollo({ ssr: true })(Home);

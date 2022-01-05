@@ -9,7 +9,7 @@ interface EditDeletePostBtnsProps {
 }
 
 const EditDeletePostBtns: React.FC<EditDeletePostBtnsProps> = ({ id }) => {
-  const [, deletePost] = useDeletePostMutation();
+  const [deletePost] = useDeletePostMutation();
 
   return (
     <Box ml="auto">
@@ -18,7 +18,12 @@ const EditDeletePostBtns: React.FC<EditDeletePostBtnsProps> = ({ id }) => {
       </NextLink>
       <IconButton
         onClick={() => {
-          deletePost({ id: id });
+          deletePost({
+            variables: { id },
+            update: (cache) => {
+              cache.evict({ id: 'Post:' + id });
+            },
+          });
         }}
         colorScheme="blackAlpha"
         icon={<DeleteIcon />}
