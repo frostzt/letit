@@ -3,10 +3,12 @@ import Head from 'next/head';
 import React from 'react';
 import EditDeletePostBtns from '../../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../../components/Layout/Layout';
+import { useMeQuery } from '../../generated/graphql';
 import { useGetPostFromUrl } from '../../hooks/useGetPostFromUrl';
 import { withApollo } from '../../utils/withApollo';
 
 const PostPage = () => {
+  const { data: meData } = useMeQuery();
   const { data, loading } = useGetPostFromUrl();
 
   if (loading) {
@@ -38,7 +40,7 @@ const PostPage = () => {
       </Head>
       <Heading mb={4}>{data.post.title}</Heading>
       <Box mb={4}>{data.post.content}</Box>
-      <EditDeletePostBtns id={data.post.id} />
+      {data.post.creator.id === meData?.me?.id && <EditDeletePostBtns id={data.post.id} />}
     </Layout>
   );
 };
