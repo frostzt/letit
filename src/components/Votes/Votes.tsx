@@ -1,9 +1,12 @@
-import { ApolloCache } from '@apollo/client';
+import { ApolloCache, ApolloError } from '@apollo/client';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Flex, IconButton } from '@chakra-ui/react';
 import { gql } from 'graphql-tag';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { PostContentFragment, useVoteMutation, VoteMutation } from '../../generated/graphql';
+import { selectGQLError } from '../../utils/selectGqlError';
 
 interface UpvoteProps {
   post: PostContentFragment;
@@ -41,20 +44,32 @@ const updateAfterPost = (value: number, postId: string, cache: ApolloCache<VoteM
 const Votes: React.FC<UpvoteProps> = ({ post }) => {
   const [loading, setLoading] = useState<'upvote-loading' | 'downvote-loading' | 'not-loading'>('not-loading');
   const [vote] = useVoteMutation();
+  const router = useRouter();
 
   return (
     <Flex flexDirection="column" alignItems="center" justifyContent="space-evenly" mr={6}>
       <IconButton
         onClick={async () => {
-          if (post.voteStatus === 1) {
-            return;
+          try {
+            if (post.voteStatus === 1) {
+              return;
+            }
+            setLoading('upvote-loading');
+            await vote({
+              variables: { postId: post.id, value: 1 },
+              update: (cache) => updateAfterPost(1, post.id, cache),
+            });
+            setLoading('not-loading');
+          } catch (error) {
+            setLoading('not-loading');
+            if (error instanceof ApolloError) {
+              const errCode = selectGQLError(error);
+              if (errCode === 'NOT_AUTHORIZED') {
+                router.replace('/login');
+                toast.error("You're not authenticated! Please login.");
+              }
+            }
           }
-          setLoading('upvote-loading');
-          await vote({
-            variables: { postId: post.id, value: 1 },
-            update: (cache) => updateAfterPost(1, post.id, cache),
-          });
-          setLoading('not-loading');
         }}
         isLoading={loading === 'upvote-loading'}
         colorScheme={post.voteStatus === 1 ? 'green' : 'blackAlpha'}
@@ -64,15 +79,26 @@ const Votes: React.FC<UpvoteProps> = ({ post }) => {
       {post.points}
       <IconButton
         onClick={async () => {
-          if (post.voteStatus === -1) {
-            return;
+          try {
+            if (post.voteStatus === -1) {
+              return;
+            }
+            setLoading('downvote-loading');
+            await vote({
+              variables: { postId: post.id, value: -1 },
+              update: (cache) => updateAfterPost(-1, post.id, cache),
+            });
+            setLoading('not-loading');
+          } catch (error) {
+            setLoading('not-loading');
+            if (error instanceof ApolloError) {
+              const errCode = selectGQLError(error);
+              if (errCode === 'NOT_AUTHORIZED') {
+                router.replace('/login');
+                toast.error("You're not authenticated! Please login.");
+              }
+            }
           }
-          setLoading('downvote-loading');
-          await vote({
-            variables: { postId: post.id, value: -1 },
-            update: (cache) => updateAfterPost(-1, post.id, cache),
-          });
-          setLoading('not-loading');
         }}
         colorScheme={post.voteStatus === -1 ? 'red' : 'blackAlpha'}
         isLoading={loading === 'downvote-loading'}
