@@ -290,6 +290,13 @@ export type VoteMutationVariables = Exact<{
 
 export type VoteMutation = { __typename?: 'Mutation'; vote: boolean };
 
+export type FullUserQueryVariables = Exact<{ [key: string]: never }>;
+
+export type FullUserQuery = {
+  __typename?: 'Query';
+  me?: { __typename?: 'User'; email: string; id: string; username: string } | null | undefined;
+};
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
@@ -718,6 +725,42 @@ export function useVoteMutation(baseOptions?: Apollo.MutationHookOptions<VoteMut
 export type VoteMutationHookResult = ReturnType<typeof useVoteMutation>;
 export type VoteMutationResult = Apollo.MutationResult<VoteMutation>;
 export type VoteMutationOptions = Apollo.BaseMutationOptions<VoteMutation, VoteMutationVariables>;
+export const FullUserDocument = gql`
+  query FullUser {
+    me {
+      email
+      ...NormalUser
+    }
+  }
+  ${NormalUserFragmentDoc}
+`;
+
+/**
+ * __useFullUserQuery__
+ *
+ * To run a query within a React component, call `useFullUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFullUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFullUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFullUserQuery(baseOptions?: Apollo.QueryHookOptions<FullUserQuery, FullUserQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<FullUserQuery, FullUserQueryVariables>(FullUserDocument, options);
+}
+export function useFullUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FullUserQuery, FullUserQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<FullUserQuery, FullUserQueryVariables>(FullUserDocument, options);
+}
+export type FullUserQueryHookResult = ReturnType<typeof useFullUserQuery>;
+export type FullUserLazyQueryHookResult = ReturnType<typeof useFullUserLazyQuery>;
+export type FullUserQueryResult = Apollo.QueryResult<FullUserQuery, FullUserQueryVariables>;
 export const MeDocument = gql`
   query Me {
     me {

@@ -1,0 +1,6 @@
+query FullUser {
+  me {
+    email
+    ...NormalUser
+  }
+}

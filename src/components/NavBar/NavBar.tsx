@@ -32,7 +32,11 @@ const NavBar: React.FC<{}> = () => {
             Create Post
           </Button>
         </NextLink>
-        <Box mr={3}>{data.me.username}</Box>
+        <NextLink href="/me">
+          <Box as={Link} mr={3}>
+            {data.me.username}
+          </Box>
+        </NextLink>
         <Button
           onClick={async () => {
             await logout();
