@@ -11,6 +11,7 @@ import {
   useFullUserQuery,
   useUpdateUserMutation,
   usePostsQuery,
+  usePostsLazyQuery,
 } from '../generated/graphql';
 import { useIsAuthenticated } from '../hooks/useIsAuthenticated';
 import { withApollo } from '../utils/withApollo';
@@ -19,13 +20,7 @@ import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostB
 
 const Me: NextPage<{}> = () => {
   const { data: meData } = useFullUserQuery();
-  const {
-    data: userPostsData,
-    fetchMore,
-    variables,
-    loading,
-    refetch,
-  } = usePostsQuery({
+  const [getPostsForUser, { data: userPostsData, variables, fetchMore, loading }] = usePostsLazyQuery({
     variables: { limit: 15, cursor: undefined, username: meData?.me?.username },
     notifyOnNetworkStatusChange: true,
   });
@@ -37,7 +32,7 @@ const Me: NextPage<{}> = () => {
   useEffect(() => {
     if (meData) {
       setEmail(meData.me?.email as string);
-      refetch();
+      getPostsForUser();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
