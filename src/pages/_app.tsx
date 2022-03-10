@@ -7,7 +7,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ChakraProvider resetCSS theme={theme}>
       <ColorModeProvider options={{ useSystemColorMode: true }}>
-        <Toaster />
+        <Toaster containerStyle={{ marginTop: '100px' }} />
         <Component {...pageProps} />
       </ColorModeProvider>
     </ChakraProvider>

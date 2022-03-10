@@ -21,6 +21,8 @@ const Me: NextPage<{}> = () => {
     }
   }, [data]);
 
+  const __isTest__ = data?.me?.email === process.env.NEXT_PUBLIC_TEST_EMAIL!;
+
   const onEdit = async () => {
     if (isEditing && email !== data?.me?.email) {
       const response = await updateUser({
@@ -72,6 +74,11 @@ const Me: NextPage<{}> = () => {
               disabled={!isEditing}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             />
+            {__isTest__ && (
+              <Text mt={2} color="tomato">
+                Test account email can&apos;t be edited!
+              </Text>
+            )}
           </article>
         </Box>
         <Button
@@ -79,6 +86,7 @@ const Me: NextPage<{}> = () => {
           _hover={{ backgroundColor: 'orangered' }}
           color="white"
           mt={6}
+          disabled={__isTest__}
           onClick={onEdit}
         >
           {!isEditing ? 'Edit' : 'Update'}
@@ -88,4 +96,4 @@ const Me: NextPage<{}> = () => {
   );
 };
 
-export default withApollo({ ssr: true })(Me);
+export default withApollo({ ssr: false })(Me);
