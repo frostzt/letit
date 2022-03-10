@@ -109,15 +109,21 @@ export type PostResponse = {
 
 export type PropertyError = {
   __typename?: 'PropertyError';
+  errorCode?: Maybe<Scalars['String']>;
   message: Scalars['String'];
   property?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  getUser?: Maybe<UserResponse>;
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
+};
+
+export type QueryGetUserArgs = {
+  username: Scalars['String'];
 };
 
 export type QueryPostArgs = {
@@ -125,6 +131,7 @@ export type QueryPostArgs = {
 };
 
 export type QueryPostsArgs = {
+  byUsername?: InputMaybe<Scalars['String']>;
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
 };
@@ -351,6 +358,7 @@ export type PostQuery = {
 export type PostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
 }>;
 
 export type PostsQuery = {
@@ -906,8 +914,8 @@ export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostsDocument = gql`
-  query Posts($limit: Int!, $cursor: String) {
-    posts(limit: $limit, cursor: $cursor) {
+  query Posts($limit: Int!, $cursor: String, $username: String) {
+    posts(limit: $limit, cursor: $cursor, byUsername: $username) {
       hasMore
       posts {
         ...PostContent
@@ -931,6 +939,7 @@ export const PostsDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      cursor: // value for 'cursor'
+ *      username: // value for 'username'
  *   },
  * });
  */
