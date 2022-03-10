@@ -24,6 +24,7 @@ const Me: NextPage<{}> = () => {
     fetchMore,
     variables,
     loading,
+    refetch,
   } = usePostsQuery({
     variables: { limit: 15, cursor: undefined, username: meData?.me?.username },
     notifyOnNetworkStatusChange: true,
@@ -36,10 +37,11 @@ const Me: NextPage<{}> = () => {
   useEffect(() => {
     if (meData) {
       setEmail(meData.me?.email as string);
+      refetch();
     }
-  }, [meData]);
 
-  console.log(userPostsData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [meData]);
 
   const __isTest__ = meData?.me?.email === process.env.NEXT_PUBLIC_TEST_EMAIL!;
   const handleLoadMore = () => {
