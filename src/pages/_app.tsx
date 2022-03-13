@@ -1,16 +1,14 @@
-import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
+import { Fragment } from 'react';
 import { Toaster } from 'react-hot-toast';
-import theme from '../theme';
+import '../styles/main.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <ChakraProvider resetCSS theme={theme}>
-      <ColorModeProvider options={{ useSystemColorMode: true }}>
-        <Toaster containerStyle={{ marginTop: '100px' }} />
-        <Component {...pageProps} />
-      </ColorModeProvider>
-    </ChakraProvider>
+    <Fragment>
+      <Toaster containerStyle={{ marginTop: '100px' }} />
+      <Component {...pageProps} />
+    </Fragment>
   );
 };
 

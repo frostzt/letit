@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
 
 export type WrapperVariantType = 'small' | 'regular';
 
@@ -8,12 +7,8 @@ interface WrapperProps {
   variant?: WrapperVariantType;
 }
 
-const Wrapper: React.FC<WrapperProps> = ({ children, variant = 'regular' }) => {
-  return (
-    <Box maxW={variant === 'regular' ? '800px' : '400px'} w="100%" mt={8} mx="auto">
-      {children}
-    </Box>
-  );
+const Wrapper: React.FC<WrapperProps> = ({ children }) => {
+  return <div className="w-5/6 px-3 sm:px-6 md:px-12 lg:px-48 ml-auto">{children}</div>;
 };
 
 export default Wrapper;

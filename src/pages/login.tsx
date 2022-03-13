@@ -1,4 +1,3 @@
-import { Box, Button, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
@@ -62,46 +61,38 @@ const LoginPage: React.FC<{}> = () => {
         <Formik initialValues={{ usernameOrEmail: '', password: '' }} onSubmit={async (values) => asyncLogin(values)}>
           {({ isSubmitting }) => (
             <Form>
-              <Box>
-                <Box mb={2}>
+              <div>
+                <div className="mb-2">
                   <InputField
                     name="usernameOrEmail"
                     placeholder="Enter your username or email"
                     label="Username or Email"
                   />
-                </Box>
-                <Box mb={4}>
+                </div>
+                <div className="mb-4">
                   <InputField name="password" placeholder="Enter your password" type="password" label="Password" />
-                </Box>
-                <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+                </div>
+                <button className="mt-4 bg-red-500" type="submit">
                   Login
-                </Button>
-                <Button
-                  cursor="pointer"
+                </button>
+                <div
+                  className="ml-4 mt-4 bg-red-500 cursor-pointer"
                   onClick={() =>
                     asyncLogin({
                       usernameOrEmail: process.env.NEXT_PUBLIC_TEST_EMAIL!,
                       password: process.env.NEXT_PUBLIC_TEST_PWD!,
                     })
                   }
-                  as="div"
-                  ml={4}
-                  mt={4}
-                  type="submit"
-                  colorScheme="red"
-                  isLoading={isSubmitting}
                 >
                   Guest Login
-                </Button>
-                <Text mt={4}>
+                </div>
+                <p className="mt-4">
                   Do not have an account?{' '}
                   <NextLink href="/register">
-                    <Text display="inline-block" cursor="pointer" color="tomato">
-                      Register.
-                    </Text>
+                    <p className="inline-block cursor-pointer text-red-500">Register.</p>
                   </NextLink>
-                </Text>
-              </Box>
+                </p>
+              </div>
             </Form>
           )}
         </Formik>

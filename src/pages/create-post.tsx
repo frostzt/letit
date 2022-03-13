@@ -1,4 +1,3 @@
-import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -45,17 +44,17 @@ const CreatePostPage: NextPage<{}> = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box>
-              <Box mb={2}>
+            <div>
+              <div className="mb-2">
                 <InputField name="title" placeholder="Enter title" label="Title" />
-              </Box>
-              <Box mb={4}>
+              </div>
+              <div className="mb-4">
                 <InputFieldTextArea name="content" placeholder="Describe your post" label="Content" />
-              </Box>
-              <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+              </div>
+              <button className="mt-4 bg-rose-600" type="submit">
                 Create Post
-              </Button>
-            </Box>
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { Box, Button, Flex, Heading, Link } from '@chakra-ui/react';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import React, { Fragment } from 'react';
 import { useLogoutMutation, useMeQuery } from '../../generated/graphql';
@@ -17,53 +17,47 @@ const NavBar: React.FC<{}> = () => {
     body = (
       <Fragment>
         <NextLink href="/login">
-          <Link mr={2}>Login</Link>
+          <div className="mr-2 cursor-pointer">Login</div>
         </NextLink>
         <NextLink href="/register">
-          <Link>Register</Link>
+          <div className="cursor-pointer">Register</div>
         </NextLink>{' '}
       </Fragment>
     );
   } else {
     body = (
-      <Flex align="center">
+      <div className="flex text-center">
         <NextLink href="/create-post">
-          <Button as={Link} mr={4}>
-            Create Post
-          </Button>
+          <button className="mr-4">Create Post</button>
         </NextLink>
         <NextLink href="/me">
-          <Box as={Link} mr={3}>
-            {data.me.username}
-          </Box>
+          <div className="cursor-pointer mr-3">{data.me.username}</div>
         </NextLink>
-        <Button
+        <button
           onClick={async () => {
             await logout();
             await apolloClient.resetStore();
           }}
-          isLoading={logoutFetching}
-          variant="link"
         >
           Logout
-        </Button>
-      </Flex>
+        </button>
+      </div>
     );
   }
 
   return (
-    <Flex zIndex={9999} position="sticky" top={0} bg="tomato" p={4}>
-      <Flex flex={1} maxW={800} margin="auto" align="center">
+    <div className="flex p-1 top-0 w-1/6 h-screen z-50 bg-zinc-900 fixed">
+      <div className="mx-auto">
         <NextLink href="/">
-          <Link>
-            <Heading color="white">Letit</Heading>
-          </Link>
+          <div className="flex justify-center ml-1 mt-2 md:mt-5 items-center">
+            <div className="relative h-10 w-10 md:h-12 md:w-12 lg:w-20 lg:h-20">
+              <Image src="/icon.svg" alt="Letit" layout="fill" />
+            </div>
+          </div>
         </NextLink>
-        <Box color="white" ml="auto">
-          {body}
-        </Box>
-      </Flex>
-    </Flex>
+      </div>
+      {/* <div className="white ml-auto">{body}</div> */}
+    </div>
   );
 };
 

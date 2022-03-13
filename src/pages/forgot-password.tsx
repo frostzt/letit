@@ -1,4 +1,3 @@
-import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -26,20 +25,20 @@ const ForgotPasswordPage: NextPage<{}> = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box>
-              <Box mb={2}>
+            <div>
+              <div className="mb-2">
                 <InputField name="email" placeholder="Enter your email" label="Email" />
-              </Box>
-              <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+              </div>
+              <button className="mt-4 bg-rose-600" type="submit">
                 Send verification Email
-              </Button>
+              </button>
               {complete && (
-                <Box mt={4}>
+                <div className="mt-4">
                   The link to generate a new password should be mailed to the email if there is an account associated
                   with it.
-                </Box>
+                </div>
               )}
-            </Box>
+            </div>
           </Form>
         )}
       </Formik>

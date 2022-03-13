@@ -1,26 +1,25 @@
-import NextLink from 'next/link';
-import { Box, Button, Heading, Input, Text, Stack, Flex, Link } from '@chakra-ui/react';
 import { NextPage } from 'next';
-import { toast } from 'react-hot-toast';
 import Head from 'next/head';
+import NextLink from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../components/Layout/Layout';
+import Votes from '../components/Votes/Votes';
 import {
   FullUserDocument,
   FullUserQuery,
   useFullUserQuery,
   useUpdateUserMutation,
-  usePostsQuery,
-  usePostsLazyQuery,
+  usePostsByUserLazyQuery,
 } from '../generated/graphql';
 import { useIsAuthenticated } from '../hooks/useIsAuthenticated';
+import { cache } from '../utils/cache';
 import { withApollo } from '../utils/withApollo';
-import Votes from '../components/Votes/Votes';
-import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 
 const Me: NextPage<{}> = () => {
   const { data: meData } = useFullUserQuery();
-  const [getPostsForUser, { data: userPostsData, variables, fetchMore, loading }] = usePostsLazyQuery({
+  const [getPostsForUser, { data: userPostsData, variables, fetchMore, loading }] = usePostsByUserLazyQuery({
     variables: { limit: 15, cursor: undefined, username: meData?.me?.username },
     notifyOnNetworkStatusChange: true,
   });
@@ -28,6 +27,14 @@ const Me: NextPage<{}> = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [updateUser] = useUpdateUserMutation();
   useIsAuthenticated();
+
+  useEffect(() => {
+    cache.evict({
+      id: 'ROOT_QUERY',
+      fieldName: 'posts:{}',
+    });
+    cache.gc();
+  }, []);
 
   useEffect(() => {
     if (meData) {

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import NavBar from '../NavBar/NavBar';
 import Wrapper, { WrapperVariantType } from '../Wrapper/Wrapper';
 
@@ -9,11 +9,12 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ variant, children }) => {
   return (
-    <Fragment>
+    <main>
       <NavBar />
-
-      <Wrapper variant={variant}>{children}</Wrapper>
-    </Fragment>
+      <Wrapper variant={variant}>
+        <div className="mt-5 col-start-2 col-end-3">{children}</div>
+      </Wrapper>
+    </main>
   );
 };
 

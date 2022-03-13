@@ -1,4 +1,3 @@
-import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -23,7 +22,7 @@ const EditPost: React.FC<{}> = () => {
   if (!data?.post) {
     return (
       <Layout>
-        <Box>Cannot find this post</Box>
+        <div>Cannot find this post</div>
       </Layout>
     );
   }
@@ -50,17 +49,17 @@ const EditPost: React.FC<{}> = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box>
-              <Box mb={2}>
+            <div>
+              <div className="mb-2">
                 <InputField name="title" placeholder="Enter title" label="Title" />
-              </Box>
-              <Box mb={4}>
+              </div>
+              <div className="mb-4">
                 <InputFieldTextArea name="content" placeholder="Describe your post" label="Content" />
-              </Box>
-              <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+              </div>
+              <button className="mt-4 bg-red-500" type="submit">
                 Update Post
-              </Button>
-            </Box>
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

@@ -1,4 +1,3 @@
-import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { NextPage } from 'next';
 import Head from 'next/head';
@@ -50,27 +49,27 @@ const ChangePassword: NextPage = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box>
-              <Box mb={2}>
+            <div>
+              <div className="mb-2">
                 <InputField
                   name="password"
                   placeholder="Enter your new password"
                   label="New Password"
                   type="password"
                 />
-              </Box>
-              <Box mb={4}>
+              </div>
+              <div className="mb-4">
                 <InputField
                   name="confirmPassword"
                   placeholder="Confirm your password"
                   type="password"
                   label="Confirm Password"
                 />
-              </Box>
-              <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+              </div>
+              <button className="mt-4 bg-red-500" type="submit">
                 Reset your password
-              </Button>
-            </Box>
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

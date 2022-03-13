@@ -1,5 +1,4 @@
 import NextLink from 'next/link';
-import { Box, Button, Text } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -45,28 +44,26 @@ const RegisterPage: React.FC<{}> = () => {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Box>
-                <Box mb={2}>
+              <div>
+                <div className="mb-2">
                   <InputField name="username" placeholder="Create an username" label="Username" />
-                </Box>
-                <Box mb={2}>
+                </div>
+                <div className="mb-2">
                   <InputField name="email" placeholder="Enter an email" label="Email" type="email" />
-                </Box>
-                <Box mb={4}>
+                </div>
+                <div className="mb-4">
                   <InputField name="password" placeholder="Create a password" type="password" label="Password" />
-                </Box>
-                <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+                </div>
+                <button className="mt-4 bg-red-500" type="submit">
                   Register
-                </Button>
-                <Text mt={4}>
+                </button>
+                <p className="mt-4">
                   Already have an account?{' '}
                   <NextLink href="/login">
-                    <Text display="inline-block" cursor="pointer" color="tomato">
-                      Login.
-                    </Text>
+                    <p className="inline-block cursor-pointer text-red-500">Login.</p>
                   </NextLink>
-                </Text>
-              </Box>
+                </p>
+              </div>
             </Form>
           )}
         </Formik>

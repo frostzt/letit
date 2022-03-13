@@ -1,8 +1,10 @@
-import { Box, Heading } from '@chakra-ui/react';
+import { MarkdownComponents } from '../../components/MDXComponents/MDXComponents';
+import ReactMarkdown from 'react-markdown';
 import Head from 'next/head';
 import React from 'react';
 import EditDeletePostBtns from '../../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../../components/Layout/Layout';
+import remarkGfm from 'remark-gfm';
 import { useMeQuery } from '../../generated/graphql';
 import { useGetPostFromUrl } from '../../hooks/useGetPostFromUrl';
 import { withApollo } from '../../utils/withApollo';
@@ -28,7 +30,7 @@ const PostPage = () => {
         <Head>
           <title>Post not found - Letit</title>
         </Head>
-        <Box>Could not find this post!</Box>
+        <div>Could not find this post!</div>
       </Layout>
     );
   }
@@ -38,8 +40,12 @@ const PostPage = () => {
       <Head>
         <title>{data.post.title} - Letit</title>
       </Head>
-      <Heading mb={4}>{data.post.title}</Heading>
-      <Box mb={4}>{data.post.content}</Box>
+      <h2 className="mb-4">{data.post.title}</h2>
+      <div className="mb-4">
+        <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
+          {data.post.content}
+        </ReactMarkdown>
+      </div>
       {data.post.creator.id === meData?.me?.id && <EditDeletePostBtns id={data.post.id} />}
     </Layout>
   );

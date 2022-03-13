@@ -1,13 +1,18 @@
-import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import NextLink from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
 import Layout from '../components/Layout/Layout';
+import { MarkdownComponents } from '../components/MDXComponents/MDXComponents';
 import Votes from '../components/Votes/Votes';
 import { useMeQuery, usePostsQuery } from '../generated/graphql';
+import Card from '../ui/Card';
+import Stack from '../ui/Stack';
+import { cache } from '../utils/cache';
 import { withApollo } from '../utils/withApollo';
 
 const Home: NextPage = () => {
@@ -16,6 +21,14 @@ const Home: NextPage = () => {
     variables: { limit: 15, cursor: undefined },
     notifyOnNetworkStatusChange: true,
   });
+
+  useEffect(() => {
+    cache.evict({
+      id: 'ROOT_QUERY',
+      fieldName: 'posts:{}',
+    });
+    cache.gc();
+  }, []);
 
   const handleLoadMore = () => {
     fetchMore({
@@ -33,7 +46,7 @@ const Home: NextPage = () => {
         <Head>
           <title>Letit - Let it out!</title>
         </Head>
-        <Box>Something broke! Please try again!</Box>
+        <div>Something broke! Please try again!</div>
       </Layout>
     );
   }
@@ -44,34 +57,15 @@ const Home: NextPage = () => {
         <title>Letit - Let it out!</title>
       </Head>
       {loading && <div>loading ...</div>}
-      <Stack spacing={8}>
-        {data &&
-          data.posts.posts.map((post) =>
-            !post ? null : (
-              <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
-                <Votes post={post} />
-                <Box flex={1}>
-                  <NextLink href="/post/[id]" as={`/post/${post.id}`}>
-                    <Link>
-                      <Heading fontSize="xl">{post.title}</Heading>
-                    </Link>
-                  </NextLink>
-                  <Text>Posted by {post.creator.username}</Text>
-                  <Flex mt={4} align="center">
-                    <Text>{post.contentSnippet}</Text>
-                    {meData?.me?.id === post.creator.id && <EditDeletePostBtns id={post.id} />}
-                  </Flex>
-                </Box>
-              </Flex>
-            )
-          )}
+      <Stack>
+        {data && data.posts.posts.map((post) => (!post ? null : <Card key={post.id} post={post} meData={meData} />))}
       </Stack>
       {data && data.posts.hasMore ? (
-        <Flex>
-          <Button onClick={handleLoadMore} isLoading={loading} colorScheme="red" m="auto" my={8}>
+        <div className="flex">
+          <button onClick={handleLoadMore} className="my-8 m-auto bg-rose-600">
             load more
-          </Button>
-        </Flex>
+          </button>
+        </div>
       ) : null}
     </Layout>
   );
