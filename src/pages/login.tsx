@@ -77,19 +77,24 @@ const LoginPage: React.FC<{}> = () => {
                     label="Password"
                   />
                 </div>
-                <button className="mt-4 bg-red-500" type="submit">
-                  Login
-                </button>
-                <div
-                  className="ml-4 mt-4 bg-red-500 cursor-pointer"
-                  onClick={() =>
-                    asyncLogin({
-                      usernameOrEmail: process.env.NEXT_PUBLIC_TEST_EMAIL!,
-                      password: process.env.NEXT_PUBLIC_TEST_PWD!,
-                    })
-                  }
-                >
-                  Guest Login
+                <div className="flex">
+                  <button
+                    type="submit"
+                    className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3 mr-5"
+                  >
+                    Login
+                  </button>
+                  <div
+                    className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3 cursor-pointer"
+                    onClick={() =>
+                      asyncLogin({
+                        usernameOrEmail: process.env.NEXT_PUBLIC_TEST_EMAIL!,
+                        password: process.env.NEXT_PUBLIC_TEST_PWD!,
+                      })
+                    }
+                  >
+                    Guest Login
+                  </div>
                 </div>
                 <p className="mt-4">
                   Do not have an account?{' '}

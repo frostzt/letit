@@ -5,7 +5,7 @@ import React, { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
 type InputFieldType = InputHTMLAttributes<HTMLInputElement> & { name: string; label: string };
 type InputFieldTextAreaType = TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; name: string };
 
-export const FormikInputField: React.FC<InputFieldType> = ({ label, size: _, ...props }) => {
+export const FormikInputField: React.FC<InputFieldType> = ({ label, type, size: _, ...props }) => {
   const [field, { error }] = useField(props);
 
   return (
@@ -17,7 +17,7 @@ export const FormikInputField: React.FC<InputFieldType> = ({ label, size: _, ...
         <input
           {...field}
           {...props}
-          type="text"
+          type={type}
           id={field.name}
           className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-4 pr-12 sm:text-sm border-gray-300 rounded-md py-1.5 lg:py-2 hd:py-2.5 hd:text-base"
           placeholder={props.placeholder}

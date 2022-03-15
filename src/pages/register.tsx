@@ -54,7 +54,10 @@ const RegisterPage: React.FC<{}> = () => {
                 <div className="mb-4">
                   <FormikInputField name="password" placeholder="Create a password" type="password" label="Password" />
                 </div>
-                <button className="mt-4 bg-red-500" type="submit">
+                <button
+                  type="submit"
+                  className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3"
+                >
                   Register
                 </button>
                 <p className="mt-4">
