@@ -6,7 +6,7 @@ import '../styles/main.css';
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <Fragment>
-      <Toaster containerStyle={{ marginTop: '100px' }} />
+      <Toaster />
       <Component {...pageProps} />
     </Fragment>
   );

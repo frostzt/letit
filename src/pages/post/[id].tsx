@@ -2,7 +2,7 @@ import { MarkdownComponents } from '../../components/MDXComponents/MDXComponents
 import ReactMarkdown from 'react-markdown';
 import Head from 'next/head';
 import React from 'react';
-import EditDeletePostBtns from '../../components/EditDeletePostBtns/EditDeletePostBtns';
+import EditDeletePostBtns from '../../components/CoupledComponents/EditDeletePostBtns';
 import Layout from '../../components/Layout/Layout';
 import remarkGfm from 'remark-gfm';
 import { useMeQuery } from '../../generated/graphql';

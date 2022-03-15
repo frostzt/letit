@@ -1,21 +1,24 @@
+import { InboxIcon } from '@heroicons/react/outline';
 import { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
-import Layout from '../components/Layout/Layout';
-import Votes from '../components/Votes/Votes';
+import AuthBar from '../components/NavBar/AuthBar';
 import {
   FullUserDocument,
   FullUserQuery,
   useFullUserQuery,
-  useUpdateUserMutation,
   usePostsByUserLazyQuery,
+  useUpdateUserMutation,
 } from '../generated/graphql';
 import { useIsAuthenticated } from '../hooks/useIsAuthenticated';
+import Card from '../ui/Card';
 import { cache } from '../utils/cache';
 import { withApollo } from '../utils/withApollo';
+const Layout = dynamic(() => import('../components/Layout/Layout'));
+const InputField = dynamic(() => import('../ui/InputField'));
+const Stack = dynamic(() => import('../ui/Stack'));
 
 const Me: NextPage<{}> = () => {
   const { data: meData } = useFullUserQuery();
@@ -91,69 +94,51 @@ const Me: NextPage<{}> = () => {
       <Head>
         <title>{meData?.me?.username}&apos;s Profile</title>
       </Head>
-      <Box>
-        <Heading as="h2">My Profile</Heading>
-        <Heading as="h3" fontSize="lg" mt={8} mb={4}>
-          Personal Details
-        </Heading>
-        <Box w={450}>
-          <label htmlFor="me-form-email">Email:</label>
-          <Input
-            type="email"
+      <div>
+        <div className="flex justify-between items-center">
+          <h2>My Profile</h2>
+          <AuthBar />
+        </div>
+        <h3 className="text-lg font-bold">Personal Details</h3>
+        <div className="mt-3">
+          <InputField
             value={email}
-            id="me-form-email"
+            type="email"
+            Icon={InboxIcon}
+            label="Email"
+            htmlFor="me-form-email"
             disabled={!isEditing}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setEmail(e.target.value);
+            }}
           />
-          {__isTest__ && (
-            <Text mt={2} color="tomato">
-              Test account email can&apos;t be edited!
-            </Text>
-          )}
-        </Box>
-        <Button
-          backgroundColor="tomato"
-          _hover={{ backgroundColor: 'orangered' }}
-          color="white"
-          mt={6}
+          {__isTest__ && <p className="text-rose-500 mt-2">Test account&apos;s email can&apos;t be edited!</p>}
+        </div>
+        <button
           disabled={__isTest__}
           onClick={onEdit}
+          className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3"
         >
           {!isEditing ? 'Edit' : 'Update'}
-        </Button>
-      </Box>
-      <Box>
-        <Heading as="h3" fontSize="lg" mt={8} mb={4}>
-          My Posts
-        </Heading>
-        <Stack spacing={8}>
+        </button>
+      </div>
+      <div className="mt-8">
+        <h3 className="text-lg font-bold mb-3">My Posts</h3>
+        <Stack>
           {userPostsData &&
             userPostsData.posts.posts.map((post) =>
-              !post ? null : (
-                <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
-                  <Votes post={post} />
-                  <Box flex={1}>
-                    <NextLink href="/post/[id]" as={`/post/${post.id}`}>
-                      <Link>
-                        <Heading fontSize="xl">{post.title}</Heading>
-                      </Link>
-                    </NextLink>
-                    <Text>Posted by {post.creator.username}</Text>
-                    <Flex mt={4} align="center">
-                      <Text>{post.contentSnippet}</Text>
-                      {meData?.me?.id === post.creator.id && <EditDeletePostBtns id={post.id} />}
-                    </Flex>
-                  </Box>
-                </Flex>
-              )
+              !post ? null : <Card key={post.id} post={post} meData={meData} />
             )}
         </Stack>
         {userPostsData && userPostsData.posts.hasMore ? (
-          <Button onClick={handleLoadMore} isLoading={loading} colorScheme="red" m="auto" my={8}>
+          <button
+            onClick={handleLoadMore}
+            className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3"
+          >
             Load More
-          </Button>
+          </button>
         ) : null}
-      </Box>
+      </div>
     </Layout>
   );
 };

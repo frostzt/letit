@@ -1,26 +1,37 @@
 import type { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import NextLink from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
-import Layout from '../components/Layout/Layout';
-import { MarkdownComponents } from '../components/MDXComponents/MDXComponents';
-import Votes from '../components/Votes/Votes';
-import { useMeQuery, usePostsQuery } from '../generated/graphql';
-import Card from '../ui/Card';
-import Stack from '../ui/Stack';
+import { PostContentFragment, useMeQuery, usePostsQuery } from '../generated/graphql';
 import { cache } from '../utils/cache';
+import { sortPostsByTop } from '../utils/sorting/postFilters';
 import { withApollo } from '../utils/withApollo';
+const Card = dynamic(() => import('../ui/Card'));
+const Stack = dynamic(() => import('../ui/Stack'));
+const Layout = dynamic(() => import('../components/Layout/Layout'));
+const AuthBar = dynamic(() => import('../components/NavBar/AuthBar'), { ssr: false });
 
 const Home: NextPage = () => {
+  const [sortPostsBy, setSortPostsBy] = useState<'recent' | 'top'>('recent');
+  const [posts, setPosts] = useState<PostContentFragment[]>();
   const { data: meData } = useMeQuery();
-  const { data, error, loading, fetchMore, variables } = usePostsQuery({
+  const {
+    data: allPosts,
+    error,
+    loading,
+    fetchMore,
+    variables,
+  } = usePostsQuery({
     variables: { limit: 15, cursor: undefined },
     notifyOnNetworkStatusChange: true,
   });
+
+  useEffect(() => {
+    if (allPosts?.posts) {
+      setPosts(allPosts.posts.posts);
+    }
+  }, [allPosts]);
 
   useEffect(() => {
     cache.evict({
@@ -32,15 +43,30 @@ const Home: NextPage = () => {
 
   const handleLoadMore = () => {
     fetchMore({
-      variables: { limit: variables?.limit, cursor: data?.posts.posts[data.posts.posts.length - 1].createdAt },
+      variables: { limit: variables?.limit, cursor: allPosts?.posts.posts[allPosts.posts.posts.length - 1].createdAt },
     });
+  };
+
+  const handleSortTop = () => {
+    setSortPostsBy('top');
+    if (posts) {
+      const sortedPosts = sortPostsByTop(posts);
+      setPosts(sortedPosts);
+    }
+  };
+
+  const handleSortRecent = () => {
+    setSortPostsBy('recent');
+    if (allPosts?.posts) {
+      setPosts(allPosts.posts.posts);
+    }
   };
 
   if (error) {
     toast.error(error.message);
   }
 
-  if (!loading && !data) {
+  if (!loading && !allPosts) {
     return (
       <Layout>
         <Head>
@@ -57,10 +83,33 @@ const Home: NextPage = () => {
         <title>Letit - Let it out!</title>
       </Head>
       {loading && <div>loading ...</div>}
-      <Stack>
-        {data && data.posts.posts.map((post) => (!post ? null : <Card key={post.id} post={post} meData={meData} />))}
-      </Stack>
-      {data && data.posts.hasMore ? (
+      <div className="flex mb-3 lg:mb-5 hd:mb-7 text-sm justify-between items-center">
+        <div className="flex">
+          <div className="mr-3">
+            <p
+              onClick={handleSortRecent}
+              className={`${
+                sortPostsBy === 'recent' ? 'text-indigo-500 border-b border-indigo-500' : 'text-zinc-600'
+              } cursor-pointer`}
+            >
+              Recent
+            </p>
+          </div>
+          <div>
+            <p
+              onClick={handleSortTop}
+              className={`${
+                sortPostsBy === 'top' ? 'text-indigo-500 border-b border-indigo-500' : 'text-zinc-600'
+              } cursor-pointer`}
+            >
+              Top
+            </p>
+          </div>
+        </div>
+        <AuthBar />
+      </div>
+      <Stack>{posts && posts.map((post) => (!post ? null : <Card key={post.id} post={post} meData={meData} />))}</Stack>
+      {allPosts && allPosts.posts.hasMore ? (
         <div className="flex">
           <button onClick={handleLoadMore} className="my-8 m-auto bg-rose-600">
             load more

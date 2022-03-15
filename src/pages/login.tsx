@@ -4,8 +4,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'react-hot-toast';
-import { InputField } from '../components/InputField/InputField';
-import Wrapper from '../components/Wrapper/Wrapper';
+import { FormikInputField } from '../ui/FormikInputField';
+import Wrapper from '../components/Layout/Wrapper';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import Layout from '../components/Layout/Layout';
@@ -63,14 +63,19 @@ const LoginPage: React.FC<{}> = () => {
             <Form>
               <div>
                 <div className="mb-2">
-                  <InputField
+                  <FormikInputField
                     name="usernameOrEmail"
                     placeholder="Enter your username or email"
                     label="Username or Email"
                   />
                 </div>
                 <div className="mb-4">
-                  <InputField name="password" placeholder="Enter your password" type="password" label="Password" />
+                  <FormikInputField
+                    name="password"
+                    placeholder="Enter your password"
+                    type="password"
+                    label="Password"
+                  />
                 </div>
                 <button className="mt-4 bg-red-500" type="submit">
                   Login

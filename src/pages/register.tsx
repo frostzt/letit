@@ -3,8 +3,8 @@ import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { InputField } from '../components/InputField/InputField';
-import Wrapper from '../components/Wrapper/Wrapper';
+import { FormikInputField } from '../ui/FormikInputField';
+import Wrapper from '../components/Layout/Wrapper';
 import { MeDocument, MeQuery, useRegisterMutation } from '../generated/graphql';
 import { mapErrors } from '../utils/mapErrors';
 import { withApollo } from '../utils/withApollo';
@@ -46,13 +46,13 @@ const RegisterPage: React.FC<{}> = () => {
             <Form>
               <div>
                 <div className="mb-2">
-                  <InputField name="username" placeholder="Create an username" label="Username" />
+                  <FormikInputField name="username" placeholder="Create an username" label="Username" />
                 </div>
                 <div className="mb-2">
-                  <InputField name="email" placeholder="Enter an email" label="Email" type="email" />
+                  <FormikInputField name="email" placeholder="Enter an email" label="Email" type="email" />
                 </div>
                 <div className="mb-4">
-                  <InputField name="password" placeholder="Create a password" type="password" label="Password" />
+                  <FormikInputField name="password" placeholder="Create a password" type="password" label="Password" />
                 </div>
                 <button className="mt-4 bg-red-500" type="submit">
                   Register

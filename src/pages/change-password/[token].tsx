@@ -4,8 +4,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import toast from 'react-hot-toast';
-import { InputField } from '../../components/InputField/InputField';
-import Wrapper from '../../components/Wrapper/Wrapper';
+import { FormikInputField } from '../../ui/FormikInputField';
+import Wrapper from '../../components/Layout/Wrapper';
 import { useChangePasswordMutation } from '../../generated/graphql';
 import { mapErrors } from '../../utils/mapErrors';
 import { withApollo } from '../../utils/withApollo';
@@ -51,7 +51,7 @@ const ChangePassword: NextPage = () => {
           <Form>
             <div>
               <div className="mb-2">
-                <InputField
+                <FormikInputField
                   name="password"
                   placeholder="Enter your new password"
                   label="New Password"
@@ -59,7 +59,7 @@ const ChangePassword: NextPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <InputField
+                <FormikInputField
                   name="confirmPassword"
                   placeholder="Confirm your password"
                   type="password"

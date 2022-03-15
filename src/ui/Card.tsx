@@ -1,11 +1,12 @@
-import { ReplyIcon, ShareIcon } from '@heroicons/react/outline';
+import { BookmarkIcon, ReplyIcon, ShareIcon } from '@heroicons/react/outline';
 import NextLink from 'next/link';
 import React from 'react';
+import toast from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import EditDeletePostBtns from '../components/EditDeletePostBtns/EditDeletePostBtns';
+import EditDeletePostBtns from '../components/CoupledComponents/EditDeletePostBtns';
 import { MarkdownComponents } from '../components/MDXComponents/MDXComponents';
-import Votes from '../components/Votes/Votes';
+import Votes from '../components/CoupledComponents/Votes';
 import { MeQuery, PostContentFragment } from '../generated/graphql';
 
 interface CardProps {
@@ -23,7 +24,7 @@ const Card: React.FC<CardProps> = ({ post, meData }) => {
         <Votes post={post} />
         <div className="flex flex-col">
           <NextLink href="/post/[id]" as={`/post/${post.id}`}>
-            <h2 className="text-lg font-bold">{post.title}</h2>
+            <h2 className="text-lg font-bold cursor-pointer">{post.title}</h2>
           </NextLink>
           <p className="font-light text-sm">
             Posted by <span className="text-indigo-500 cursor-pointer">{post.creator.username}</span>
@@ -38,10 +39,22 @@ const Card: React.FC<CardProps> = ({ post, meData }) => {
       <hr className="ml-8 mt-3" />
       <div className="mt-2 flex ml-8">
         <div className="flex">
-          <div className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-3 hover:text-indigo-500">
+          <div
+            onClick={() => toast.error('This feature is yet being implemented!')}
+            className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-3 hover:text-indigo-500 cursor-pointer"
+          >
             <ReplyIcon />
           </div>
-          <div className="h-3.5 w-3.5 lg:h-4 lg:w-4 hover:text-indigo-500">
+          <div
+            onClick={() => toast.error('This feature is yet being implemented!')}
+            className="h-3.5 w-3.5 lg:h-4 lg:w-4 mr-3 hover:text-indigo-500 cursor-pointer"
+          >
+            <BookmarkIcon />
+          </div>
+          <div
+            onClick={() => toast.error('This feature is yet being implemented!')}
+            className="h-3.5 w-3.5 lg:h-4 lg:w-4 hover:text-indigo-500 cursor-pointer"
+          >
             <ShareIcon />
           </div>
         </div>
