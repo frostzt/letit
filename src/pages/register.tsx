@@ -1,11 +1,10 @@
 import NextLink from 'next/link';
-import { Box, Button, Text } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { InputField } from '../components/InputField/InputField';
-import Wrapper from '../components/Wrapper/Wrapper';
+import { FormikInputField } from '../ui/FormikInputField';
+import Wrapper from '../components/Layout/Wrapper';
 import { MeDocument, MeQuery, useRegisterMutation } from '../generated/graphql';
 import { mapErrors } from '../utils/mapErrors';
 import { withApollo } from '../utils/withApollo';
@@ -45,28 +44,26 @@ const RegisterPage: React.FC<{}> = () => {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Box>
-                <Box mb={2}>
-                  <InputField name="username" placeholder="Create an username" label="Username" />
-                </Box>
-                <Box mb={2}>
-                  <InputField name="email" placeholder="Enter an email" label="Email" type="email" />
-                </Box>
-                <Box mb={4}>
-                  <InputField name="password" placeholder="Create a password" type="password" label="Password" />
-                </Box>
-                <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+              <div>
+                <div className="mb-2">
+                  <FormikInputField name="username" placeholder="Create an username" label="Username" />
+                </div>
+                <div className="mb-2">
+                  <FormikInputField name="email" placeholder="Enter an email" label="Email" type="email" />
+                </div>
+                <div className="mb-4">
+                  <FormikInputField name="password" placeholder="Create a password" type="password" label="Password" />
+                </div>
+                <button className="mt-4 bg-red-500" type="submit">
                   Register
-                </Button>
-                <Text mt={4}>
+                </button>
+                <p className="mt-4">
                   Already have an account?{' '}
                   <NextLink href="/login">
-                    <Text display="inline-block" cursor="pointer" color="tomato">
-                      Login.
-                    </Text>
+                    <p className="inline-block cursor-pointer text-red-500">Login.</p>
                   </NextLink>
-                </Text>
-              </Box>
+                </p>
+              </div>
             </Form>
           )}
         </Formik>

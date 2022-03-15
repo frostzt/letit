@@ -1,10 +1,9 @@
-import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import toast from 'react-hot-toast';
-import { InputField, InputFieldTextArea } from '../../../components/InputField/InputField';
+import { FormikInputField, FormikInputFieldTextArea } from '../../../ui/FormikInputField';
 import Layout from '../../../components/Layout/Layout';
 import { usePostQuery, useUpdatePostMutation } from '../../../generated/graphql';
 import { useGetPostIdFromUrl } from '../../../hooks/useGetPostIdFromUrl';
@@ -23,7 +22,7 @@ const EditPost: React.FC<{}> = () => {
   if (!data?.post) {
     return (
       <Layout>
-        <Box>Cannot find this post</Box>
+        <div>Cannot find this post</div>
       </Layout>
     );
   }
@@ -50,17 +49,20 @@ const EditPost: React.FC<{}> = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box>
-              <Box mb={2}>
-                <InputField name="title" placeholder="Enter title" label="Title" />
-              </Box>
-              <Box mb={4}>
-                <InputFieldTextArea name="content" placeholder="Describe your post" label="Content" />
-              </Box>
-              <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
-                Update Post
-              </Button>
-            </Box>
+            <div>
+              <div className="mb-2">
+                <FormikInputField name="title" placeholder="Enter title" label="Title" />
+              </div>
+              <div className="mb-4">
+                <FormikInputFieldTextArea name="content" placeholder="Describe your post" label="Content" />
+              </div>
+              <button
+                type="submit"
+                className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3"
+              >
+                Create Post
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

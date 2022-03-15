@@ -1,6 +1,5 @@
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, IconButton, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { TrashIcon, PencilIcon } from '@heroicons/react/outline';
 import React from 'react';
 import { useDeletePostMutation } from '../../generated/graphql';
 
@@ -12,11 +11,14 @@ const EditDeletePostBtns: React.FC<EditDeletePostBtnsProps> = ({ id }) => {
   const [deletePost] = useDeletePostMutation();
 
   return (
-    <Box ml="auto">
+    <div className="ml-auto flex">
       <NextLink href="/post/edit/[id]" as={`/post/edit/${id}`}>
-        <IconButton as={Link} colorScheme="blackAlpha" icon={<EditIcon />} mr={4} aria-label="Edit Post" />
+        <div className="text-gray-900 cursor-pointer mr-3 w-3.5 h-3.5 lg:w-4 lg:h-4 hd:w-5 hd:h-5">
+          <PencilIcon />
+        </div>
       </NextLink>
-      <IconButton
+      <div
+        className="text-rose-500 cursor-pointer w-3.5 h-3.5 lg:w-4 lg:h-4 hd:w-5 hd:h-5"
         onClick={() => {
           deletePost({
             variables: { id },
@@ -25,11 +27,10 @@ const EditDeletePostBtns: React.FC<EditDeletePostBtnsProps> = ({ id }) => {
             },
           });
         }}
-        colorScheme="blackAlpha"
-        icon={<DeleteIcon />}
-        aria-label="Delete Post"
-      />
-    </Box>
+      >
+        <TrashIcon />
+      </div>
+    </div>
   );
 };
 

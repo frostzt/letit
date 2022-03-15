@@ -358,10 +358,34 @@ export type PostQuery = {
 export type PostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
-  username?: InputMaybe<Scalars['String']>;
 }>;
 
 export type PostsQuery = {
+  __typename?: 'Query';
+  posts: {
+    __typename?: 'PaginatedPosts';
+    hasMore: boolean;
+    posts: Array<{
+      __typename?: 'Post';
+      id: string;
+      title: string;
+      points: string;
+      contentSnippet: string;
+      voteStatus?: number | null | undefined;
+      createdAt: string;
+      updatedAt: string;
+      creator: { __typename?: 'User'; id: string; username: string };
+    }>;
+  };
+};
+
+export type PostsByUserQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
+}>;
+
+export type PostsByUserQuery = {
   __typename?: 'Query';
   posts: {
     __typename?: 'PaginatedPosts';
@@ -914,8 +938,8 @@ export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostsDocument = gql`
-  query Posts($limit: Int!, $cursor: String, $username: String) {
-    posts(limit: $limit, cursor: $cursor, byUsername: $username) {
+  query Posts($limit: Int!, $cursor: String) {
+    posts(limit: $limit, cursor: $cursor) {
       hasMore
       posts {
         ...PostContent
@@ -939,7 +963,6 @@ export const PostsDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      cursor: // value for 'cursor'
- *      username: // value for 'username'
  *   },
  * });
  */
@@ -954,3 +977,46 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const PostsByUserDocument = gql`
+  query PostsByUser($limit: Int!, $cursor: String, $username: String) {
+    posts(limit: $limit, cursor: $cursor, byUsername: $username) {
+      hasMore
+      posts {
+        ...PostContent
+      }
+    }
+  }
+  ${PostContentFragmentDoc}
+`;
+
+/**
+ * __usePostsByUserQuery__
+ *
+ * To run a query within a React component, call `usePostsByUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostsByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostsByUserQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function usePostsByUserQuery(baseOptions: Apollo.QueryHookOptions<PostsByUserQuery, PostsByUserQueryVariables>) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<PostsByUserQuery, PostsByUserQueryVariables>(PostsByUserDocument, options);
+}
+export function usePostsByUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<PostsByUserQuery, PostsByUserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<PostsByUserQuery, PostsByUserQueryVariables>(PostsByUserDocument, options);
+}
+export type PostsByUserQueryHookResult = ReturnType<typeof usePostsByUserQuery>;
+export type PostsByUserLazyQueryHookResult = ReturnType<typeof usePostsByUserLazyQuery>;
+export type PostsByUserQueryResult = Apollo.QueryResult<PostsByUserQuery, PostsByUserQueryVariables>;

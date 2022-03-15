@@ -16,12 +16,10 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.6",
-    "@chakra-ui/icons": "^1.1.1",
-    "@chakra-ui/react": "^1.7.3",
-    "@emotion/react": "^11",
-    "@emotion/styled": "^11",
     "@graphql-codegen/typescript-react-apollo": "^3.2.3",
-    "@urql/exchange-graphcache": "^4.3.6",
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.6",
+    "autoprefixer": "^10.4.2",
     "formik": "^2.2.9",
     "framer-motion": "^4",
     "graphql": "^16.2.0",
@@ -29,10 +27,14 @@
     "next": "12.0.7",
     "next-apollo": "^5.0.7",
     "next-urql": "^3.3.2",
+    "postcss": "^8.4.8",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hot-toast": "^2.1.1",
-    "react-is": "^17.0.2"
+    "react-is": "^17.0.2",
+    "react-markdown": "^8.0.0",
+    "react-responsive": "^9.0.0-beta.6",
+    "remark-gfm": "^3.0.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.3.0",
@@ -46,6 +48,7 @@
     "eslint-config-prettier": "^8.3.0",
     "husky": "^7.0.0",
     "prettier": "^2.5.1",
+    "tailwindcss": "^3.0.23",
     "typescript": "4.5.4"
   }
 }

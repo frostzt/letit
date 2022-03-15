@@ -1,12 +1,11 @@
-import { Box, Button } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import toast from 'react-hot-toast';
-import { InputField } from '../../components/InputField/InputField';
-import Wrapper from '../../components/Wrapper/Wrapper';
+import { FormikInputField } from '../../ui/FormikInputField';
+import Wrapper from '../../components/Layout/Wrapper';
 import { useChangePasswordMutation } from '../../generated/graphql';
 import { mapErrors } from '../../utils/mapErrors';
 import { withApollo } from '../../utils/withApollo';
@@ -50,27 +49,27 @@ const ChangePassword: NextPage = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Box>
-              <Box mb={2}>
-                <InputField
+            <div>
+              <div className="mb-2">
+                <FormikInputField
                   name="password"
                   placeholder="Enter your new password"
                   label="New Password"
                   type="password"
                 />
-              </Box>
-              <Box mb={4}>
-                <InputField
+              </div>
+              <div className="mb-4">
+                <FormikInputField
                   name="confirmPassword"
                   placeholder="Confirm your password"
                   type="password"
                   label="Confirm Password"
                 />
-              </Box>
-              <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+              </div>
+              <button className="mt-4 bg-red-500" type="submit">
                 Reset your password
-              </Button>
-            </Box>
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

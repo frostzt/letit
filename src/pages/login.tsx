@@ -1,12 +1,11 @@
-import { Box, Button, Text } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { Form, Formik } from 'formik';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'react-hot-toast';
-import { InputField } from '../components/InputField/InputField';
-import Wrapper from '../components/Wrapper/Wrapper';
+import { FormikInputField } from '../ui/FormikInputField';
+import Wrapper from '../components/Layout/Wrapper';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import Layout from '../components/Layout/Layout';
@@ -62,46 +61,43 @@ const LoginPage: React.FC<{}> = () => {
         <Formik initialValues={{ usernameOrEmail: '', password: '' }} onSubmit={async (values) => asyncLogin(values)}>
           {({ isSubmitting }) => (
             <Form>
-              <Box>
-                <Box mb={2}>
-                  <InputField
+              <div>
+                <div className="mb-2">
+                  <FormikInputField
                     name="usernameOrEmail"
                     placeholder="Enter your username or email"
                     label="Username or Email"
                   />
-                </Box>
-                <Box mb={4}>
-                  <InputField name="password" placeholder="Enter your password" type="password" label="Password" />
-                </Box>
-                <Button mt={4} type="submit" colorScheme="red" isLoading={isSubmitting}>
+                </div>
+                <div className="mb-4">
+                  <FormikInputField
+                    name="password"
+                    placeholder="Enter your password"
+                    type="password"
+                    label="Password"
+                  />
+                </div>
+                <button className="mt-4 bg-red-500" type="submit">
                   Login
-                </Button>
-                <Button
-                  cursor="pointer"
+                </button>
+                <div
+                  className="ml-4 mt-4 bg-red-500 cursor-pointer"
                   onClick={() =>
                     asyncLogin({
                       usernameOrEmail: process.env.NEXT_PUBLIC_TEST_EMAIL!,
                       password: process.env.NEXT_PUBLIC_TEST_PWD!,
                     })
                   }
-                  as="div"
-                  ml={4}
-                  mt={4}
-                  type="submit"
-                  colorScheme="red"
-                  isLoading={isSubmitting}
                 >
                   Guest Login
-                </Button>
-                <Text mt={4}>
+                </div>
+                <p className="mt-4">
                   Do not have an account?{' '}
                   <NextLink href="/register">
-                    <Text display="inline-block" cursor="pointer" color="tomato">
-                      Register.
-                    </Text>
+                    <p className="inline-block cursor-pointer text-red-500">Register.</p>
                   </NextLink>
-                </Text>
-              </Box>
+                </p>
+              </div>
             </Form>
           )}
         </Formik>
