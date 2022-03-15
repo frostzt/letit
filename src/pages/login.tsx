@@ -58,54 +58,56 @@ const LoginPage: React.FC<{}> = () => {
         <Head>
           <title>Login - Letit</title>
         </Head>
-        <Formik initialValues={{ usernameOrEmail: '', password: '' }} onSubmit={async (values) => asyncLogin(values)}>
-          {({ isSubmitting }) => (
-            <Form>
-              <div>
-                <div className="mb-2">
-                  <FormikInputField
-                    name="usernameOrEmail"
-                    placeholder="Enter your username or email"
-                    label="Username or Email"
-                  />
-                </div>
-                <div className="mb-4">
-                  <FormikInputField
-                    name="password"
-                    placeholder="Enter your password"
-                    type="password"
-                    label="Password"
-                  />
-                </div>
-                <div className="flex">
-                  <button
-                    type="submit"
-                    className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3 mr-5"
-                  >
-                    Login
-                  </button>
-                  <div
-                    className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3 cursor-pointer"
-                    onClick={() =>
-                      asyncLogin({
-                        usernameOrEmail: process.env.NEXT_PUBLIC_TEST_EMAIL!,
-                        password: process.env.NEXT_PUBLIC_TEST_PWD!,
-                      })
-                    }
-                  >
-                    Guest Login
+        <div className="-translate-x-10 md:translate-x-0">
+          <Formik initialValues={{ usernameOrEmail: '', password: '' }} onSubmit={async (values) => asyncLogin(values)}>
+            {({ isSubmitting }) => (
+              <Form>
+                <div>
+                  <div className="mb-2">
+                    <FormikInputField
+                      name="usernameOrEmail"
+                      placeholder="Enter your username or email"
+                      label="Username or Email"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <FormikInputField
+                      name="password"
+                      placeholder="Enter your password"
+                      type="password"
+                      label="Password"
+                    />
+                  </div>
+                  <div className="flex">
+                    <button
+                      type="submit"
+                      className="bg-indigo-500 text-white text-sm py-1 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3 mr-5"
+                    >
+                      Login
+                    </button>
+                    <div
+                      className="bg-indigo-500 text-white text-sm py-1 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3 cursor-pointer whitespace-nowrap"
+                      onClick={() =>
+                        asyncLogin({
+                          usernameOrEmail: process.env.NEXT_PUBLIC_TEST_EMAIL!,
+                          password: process.env.NEXT_PUBLIC_TEST_PWD!,
+                        })
+                      }
+                    >
+                      Guest Login
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    Do not have an account?{' '}
+                    <NextLink href="/register">
+                      <p className="inline-block cursor-pointer text-red-500">Register.</p>
+                    </NextLink>
                   </div>
                 </div>
-                <p className="mt-4">
-                  Do not have an account?{' '}
-                  <NextLink href="/register">
-                    <p className="inline-block cursor-pointer text-red-500">Register.</p>
-                  </NextLink>
-                </p>
-              </div>
-            </Form>
-          )}
-        </Formik>
+              </Form>
+            )}
+          </Formik>
+        </div>
       </Wrapper>
     </Layout>
   );
