@@ -47,24 +47,26 @@ const EditPost: React.FC<{}> = () => {
           router.push(`/post/${postId}`);
         }}
       >
-        {({ isSubmitting }) => (
-          <Form>
-            <div>
-              <div className="mb-2">
-                <FormikInputField name="title" placeholder="Enter title" label="Title" />
+        {({ isSubmitting }) => {
+          return (
+            <Form>
+              <div>
+                <div className="mb-2">
+                  <FormikInputField name="title" placeholder="Enter title" label="Title" />
+                </div>
+                <div className="mb-4">
+                  <FormikInputFieldTextArea rows={15} name="content" placeholder="Describe your post" label="Content" />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-indigo-500 text-white text-sm py-1.5 px-5 mb-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3"
+                >
+                  Update
+                </button>
               </div>
-              <div className="mb-4">
-                <FormikInputFieldTextArea name="content" placeholder="Describe your post" label="Content" />
-              </div>
-              <button
-                type="submit"
-                className="bg-indigo-500 text-white text-sm py-1.5 px-5 rounded-sm shadow-lg shadow-indigo-500/50 mt-3"
-              >
-                Create Post
-              </button>
-            </div>
-          </Form>
-        )}
+            </Form>
+          );
+        }}
       </Formik>
     </Layout>
   );

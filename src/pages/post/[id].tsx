@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import { useMeQuery } from '../../generated/graphql';
 import { useGetPostFromUrl } from '../../hooks/useGetPostFromUrl';
 import { withApollo } from '../../utils/withApollo';
+import Votes from '../../components/CoupledComponents/Votes';
 
 const PostPage = () => {
   const { data: meData } = useMeQuery();
@@ -35,18 +36,28 @@ const PostPage = () => {
     );
   }
 
+  const renderedPost = {
+    ...data.post,
+    contentSnippet: '',
+  };
+
   return (
     <Layout>
       <Head>
         <title>{data.post.title} - Letit</title>
       </Head>
-      <h2 className="mb-4">{data.post.title}</h2>
-      <div className="mb-4">
-        <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
-          {data.post.content}
-        </ReactMarkdown>
+      <div className="flex">
+        <Votes post={renderedPost} />
+        <div className="ml-5">
+          <h2 className="mb-4 font-bold text-xl inline-block">{data.post.title}</h2>
+          <div className="mb-4">
+            <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
+              {data.post.content}
+            </ReactMarkdown>
+          </div>
+          {data.post.creator.id === meData?.me?.id && <EditDeletePostBtns id={data.post.id} />}
+        </div>
       </div>
-      {data.post.creator.id === meData?.me?.id && <EditDeletePostBtns id={data.post.id} />}
     </Layout>
   );
 };

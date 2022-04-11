@@ -5,7 +5,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {};
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -13,6 +13,26 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
+};
+
+export type BookmarkWithError = {
+  __typename?: 'BookmarkWithError';
+  errors?: Maybe<Array<PropertyError>>;
+  operation?: Maybe<Scalars['Boolean']>;
+};
+
+export type BookmarkWithPost = {
+  __typename?: 'BookmarkWithPost';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  points: Scalars['Float'];
+  postId: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  userId: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type BooleanResponse = {
@@ -24,6 +44,7 @@ export type BooleanResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: BooleanResponse;
+  createBookmark: BookmarkWithError;
   createPost: PostResponse;
   deletePost: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
@@ -38,6 +59,10 @@ export type Mutation = {
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String'];
   token: Scalars['String'];
+};
+
+export type MutationCreateBookmarkArgs = {
+  postId: Scalars['String'];
 };
 
 export type MutationCreatePostArgs = {
@@ -76,6 +101,18 @@ export type MutationVoteArgs = {
   value: Scalars['Int'];
 };
 
+export type PaginatedBookmarkedPosts = {
+  __typename?: 'PaginatedBookmarkedPosts';
+  booksmarkedPosts: Array<BookmarkWithPost>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type PaginatedPinnedPosts = {
+  __typename?: 'PaginatedPinnedPosts';
+  hasMore: Scalars['Boolean'];
+  posts: Array<Post>;
+};
+
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
   hasMore: Scalars['Boolean'];
@@ -84,12 +121,14 @@ export type PaginatedPosts = {
 
 export type Post = {
   __typename?: 'Post';
+  bookmarked?: Maybe<Scalars['Boolean']>;
   content: Scalars['String'];
   contentSnippet: Scalars['String'];
   createdAt: Scalars['String'];
   creator: User;
   creatorId: Scalars['String'];
   id: Scalars['String'];
+  pinned: Scalars['Boolean'];
   points: Scalars['String'];
   title: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -116,10 +155,22 @@ export type PropertyError = {
 
 export type Query = {
   __typename?: 'Query';
+  getBookmarkedPosts: PaginatedBookmarkedPosts;
+  getPinnedPosts: PaginatedPinnedPosts;
   getUser?: Maybe<UserResponse>;
   me?: Maybe<User>;
   post?: Maybe<Post>;
   posts: PaginatedPosts;
+};
+
+export type QueryGetBookmarkedPostsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
+};
+
+export type QueryGetPinnedPostsArgs = {
+  cursor?: InputMaybe<Scalars['String']>;
+  limit: Scalars['Int'];
 };
 
 export type QueryGetUserArgs = {
@@ -184,6 +235,7 @@ export type PostContentFragment = {
   title: string;
   points: string;
   contentSnippet: string;
+  bookmarked?: boolean | null | undefined;
   voteStatus?: number | null | undefined;
   createdAt: string;
   updatedAt: string;
@@ -202,6 +254,22 @@ export type ChangePasswordMutation = {
     changePassword?: boolean | null | undefined;
     errors?:
       | Array<{ __typename?: 'PropertyError'; message: string; property?: string | null | undefined }>
+      | null
+      | undefined;
+  };
+};
+
+export type CreateBookmarkMutationVariables = Exact<{
+  PostId: Scalars['String'];
+}>;
+
+export type CreateBookmarkMutation = {
+  __typename?: 'Mutation';
+  createBookmark: {
+    __typename?: 'BookmarkWithError';
+    operation?: boolean | null | undefined;
+    errors?:
+      | Array<{ __typename?: 'PropertyError'; errorCode?: string | null | undefined; message: string }>
       | null
       | undefined;
   };
@@ -326,6 +394,31 @@ export type FullUserQuery = {
   me?: { __typename?: 'User'; email: string; id: string; username: string } | null | undefined;
 };
 
+export type GetPinnedPostsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: InputMaybe<Scalars['String']>;
+}>;
+
+export type GetPinnedPostsQuery = {
+  __typename?: 'Query';
+  posts: {
+    __typename?: 'PaginatedPosts';
+    hasMore: boolean;
+    posts: Array<{
+      __typename?: 'Post';
+      id: string;
+      title: string;
+      points: string;
+      contentSnippet: string;
+      bookmarked?: boolean | null | undefined;
+      voteStatus?: number | null | undefined;
+      createdAt: string;
+      updatedAt: string;
+      creator: { __typename?: 'User'; id: string; username: string };
+    }>;
+  };
+};
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
@@ -371,6 +464,7 @@ export type PostsQuery = {
       title: string;
       points: string;
       contentSnippet: string;
+      bookmarked?: boolean | null | undefined;
       voteStatus?: number | null | undefined;
       createdAt: string;
       updatedAt: string;
@@ -396,6 +490,7 @@ export type PostsByUserQuery = {
       title: string;
       points: string;
       contentSnippet: string;
+      bookmarked?: boolean | null | undefined;
       voteStatus?: number | null | undefined;
       createdAt: string;
       updatedAt: string;
@@ -434,6 +529,7 @@ export const PostContentFragmentDoc = gql`
     title
     points
     contentSnippet
+    bookmarked
     voteStatus
     createdAt
     updatedAt
@@ -485,6 +581,48 @@ export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordM
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<
   ChangePasswordMutation,
   ChangePasswordMutationVariables
+>;
+export const CreateBookmarkDocument = gql`
+  mutation CreateBookmark($PostId: String!) {
+    createBookmark(postId: $PostId) {
+      errors {
+        errorCode
+        message
+      }
+      operation
+    }
+  }
+`;
+export type CreateBookmarkMutationFn = Apollo.MutationFunction<CreateBookmarkMutation, CreateBookmarkMutationVariables>;
+
+/**
+ * __useCreateBookmarkMutation__
+ *
+ * To run a mutation, you first call `useCreateBookmarkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBookmarkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBookmarkMutation, { data, loading, error }] = useCreateBookmarkMutation({
+ *   variables: {
+ *      PostId: // value for 'PostId'
+ *   },
+ * });
+ */
+export function useCreateBookmarkMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateBookmarkMutation, CreateBookmarkMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateBookmarkMutation, CreateBookmarkMutationVariables>(CreateBookmarkDocument, options);
+}
+export type CreateBookmarkMutationHookResult = ReturnType<typeof useCreateBookmarkMutation>;
+export type CreateBookmarkMutationResult = Apollo.MutationResult<CreateBookmarkMutation>;
+export type CreateBookmarkMutationOptions = Apollo.BaseMutationOptions<
+  CreateBookmarkMutation,
+  CreateBookmarkMutationVariables
 >;
 export const CreatePostDocument = gql`
   mutation CreatePost($data: PostInput!) {
@@ -857,6 +995,50 @@ export function useFullUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<F
 export type FullUserQueryHookResult = ReturnType<typeof useFullUserQuery>;
 export type FullUserLazyQueryHookResult = ReturnType<typeof useFullUserLazyQuery>;
 export type FullUserQueryResult = Apollo.QueryResult<FullUserQuery, FullUserQueryVariables>;
+export const GetPinnedPostsDocument = gql`
+  query getPinnedPosts($limit: Int!, $cursor: String) {
+    posts(limit: $limit, cursor: $cursor) {
+      hasMore
+      posts {
+        ...PostContent
+      }
+    }
+  }
+  ${PostContentFragmentDoc}
+`;
+
+/**
+ * __useGetPinnedPostsQuery__
+ *
+ * To run a query within a React component, call `useGetPinnedPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPinnedPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPinnedPostsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetPinnedPostsQuery(
+  baseOptions: Apollo.QueryHookOptions<GetPinnedPostsQuery, GetPinnedPostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetPinnedPostsQuery, GetPinnedPostsQueryVariables>(GetPinnedPostsDocument, options);
+}
+export function useGetPinnedPostsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetPinnedPostsQuery, GetPinnedPostsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetPinnedPostsQuery, GetPinnedPostsQueryVariables>(GetPinnedPostsDocument, options);
+}
+export type GetPinnedPostsQueryHookResult = ReturnType<typeof useGetPinnedPostsQuery>;
+export type GetPinnedPostsLazyQueryHookResult = ReturnType<typeof useGetPinnedPostsLazyQuery>;
+export type GetPinnedPostsQueryResult = Apollo.QueryResult<GetPinnedPostsQuery, GetPinnedPostsQueryVariables>;
 export const MeDocument = gql`
   query Me {
     me {

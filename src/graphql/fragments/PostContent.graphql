@@ -3,6 +3,7 @@ fragment PostContent on Post {
   title
   points
   contentSnippet
+  bookmarked
   voteStatus
   createdAt
   updatedAt

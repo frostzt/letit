@@ -5,10 +5,10 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { FormikInputField } from '../ui/FormikInputField';
-import Wrapper from '../components/Layout/Wrapper';
 import { MeDocument, MeQuery, useLoginMutation } from '../generated/graphql';
 import { withApollo } from '../utils/withApollo';
 import Layout from '../components/Layout/Layout';
+import Wrapper from '../components/Layout/Wrapper';
 
 interface Values {
   usernameOrEmail: string;

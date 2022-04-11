@@ -19,6 +19,8 @@
     "@graphql-codegen/typescript-react-apollo": "^3.2.3",
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "^1.0.6",
+    "@tiptap/react": "^2.0.0-beta.108",
+    "@tiptap/starter-kit": "^2.0.0-beta.183",
     "autoprefixer": "^10.4.2",
     "formik": "^2.2.9",
     "framer-motion": "^4",
@@ -34,7 +36,8 @@
     "react-is": "^17.0.2",
     "react-markdown": "^8.0.0",
     "react-responsive": "^9.0.0-beta.6",
-    "remark-gfm": "^3.0.1"
+    "remark-gfm": "^3.0.1",
+    "sass": "^1.49.9"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.3.0",

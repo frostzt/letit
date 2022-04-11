@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import AuthBar from '../components/NavBar/AuthBar';
 import {
   FullUserDocument,
   FullUserQuery,
@@ -16,6 +15,7 @@ import { useIsAuthenticated } from '../hooks/useIsAuthenticated';
 import Card from '../ui/Card';
 import { cache } from '../utils/cache';
 import { withApollo } from '../utils/withApollo';
+const AuthBar = dynamic(() => import('../components/NavBar/AuthBar'), { ssr: false });
 const Layout = dynamic(() => import('../components/Layout/Layout'));
 const InputField = dynamic(() => import('../ui/InputField'));
 const Stack = dynamic(() => import('../ui/Stack'));

@@ -1,0 +1,9 @@
+mutation CreateBookmark($PostId: String!) {
+  createBookmark(postId: $PostId) {
+    errors {
+      errorCode
+      message
+    }
+    operation
+  }
+}

@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { PostContentFragment, useMeQuery, usePostsQuery } from '../generated/graphql';
+import { PostContentFragment, useGetPinnedPostsLazyQuery, useMeQuery, usePostsQuery } from '../generated/graphql';
 import { cache } from '../utils/cache';
 import { sortPostsByTop } from '../utils/sorting/postFilters';
 import { withApollo } from '../utils/withApollo';
@@ -13,9 +13,13 @@ const Layout = dynamic(() => import('../components/Layout/Layout'));
 const AuthBar = dynamic(() => import('../components/NavBar/AuthBar'), { ssr: false });
 
 const Home: NextPage = () => {
-  const [sortPostsBy, setSortPostsBy] = useState<'recent' | 'top'>('recent');
+  const [sortPostsBy, setSortPostsBy] = useState<'recent' | 'top' | 'pinned'>('recent');
   const [posts, setPosts] = useState<PostContentFragment[]>();
   const { data: meData } = useMeQuery();
+  const [getPinnedPosts, { data: pinnedPosts, error: pinnedPostsErrored, variables: pinnedPostsVariables }] =
+    useGetPinnedPostsLazyQuery({
+      variables: { limit: 15, cursor: undefined },
+    });
   const {
     data: allPosts,
     error,
@@ -47,6 +51,15 @@ const Home: NextPage = () => {
     });
   };
 
+  const handleLoadMorePinnedPosts = () => {
+    fetchMore({
+      variables: {
+        limit: pinnedPostsVariables?.limit,
+        cursor: pinnedPosts?.posts.posts[pinnedPosts.posts.posts.length - 1].createdAt,
+      },
+    });
+  };
+
   const handleSortTop = () => {
     setSortPostsBy('top');
     if (posts) {
@@ -59,6 +72,16 @@ const Home: NextPage = () => {
     setSortPostsBy('recent');
     if (allPosts?.posts) {
       setPosts(allPosts.posts.posts);
+    }
+  };
+
+  const handleSortPinned = async () => {
+    setSortPostsBy('pinned');
+    await getPinnedPosts();
+    if (pinnedPosts?.posts) {
+      setPosts(pinnedPosts.posts.posts);
+    } else {
+      setPosts(undefined);
     }
   };
 
@@ -95,7 +118,7 @@ const Home: NextPage = () => {
               Recent
             </p>
           </div>
-          <div>
+          <div className="mr-3">
             <p
               onClick={handleSortTop}
               className={`${
@@ -105,13 +128,26 @@ const Home: NextPage = () => {
               Top
             </p>
           </div>
+          <div>
+            <p
+              onClick={handleSortPinned}
+              className={`${
+                sortPostsBy === 'pinned' ? 'text-indigo-500 border-b border-indigo-500' : 'text-zinc-600'
+              } cursor-pointer`}
+            >
+              Pinned
+            </p>
+          </div>
         </div>
         <AuthBar />
       </div>
       <Stack>{posts && posts.map((post) => (!post ? null : <Card key={post.id} post={post} meData={meData} />))}</Stack>
       {allPosts && allPosts.posts.hasMore ? (
         <div className="flex">
-          <button onClick={handleLoadMore} className="my-8 m-auto bg-rose-600">
+          <button
+            onClick={sortPostsBy !== 'pinned' ? handleLoadMore : handleLoadMorePinnedPosts}
+            className="my-8 m-auto bg-rose-600"
+          >
             load more
           </button>
         </div>
